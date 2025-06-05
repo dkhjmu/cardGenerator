@@ -15,9 +15,13 @@ class Card(
 
     var name: String = "",
 
+    var type: String = "",
+
     var image: String? = null,
 
     var description: String = "",
+
+    var tags: String? = null,
 
     @Column(columnDefinition = "TEXT")
     var data: String? = null,

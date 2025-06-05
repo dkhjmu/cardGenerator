@@ -9,6 +9,7 @@ class BoardGame(
     val id: Long = 0,
     var title: String = "",
     var overview: String = "",
+    var tags: String? = null,
     @Column(columnDefinition = "TEXT")
     var data: String? = null,
     var createdAt: LocalDateTime = LocalDateTime.now(),
