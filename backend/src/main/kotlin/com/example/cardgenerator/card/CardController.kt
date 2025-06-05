@@ -7,7 +7,8 @@ import org.springframework.web.bind.annotation.*
 class CardController(private val repository: CardRepository) {
 
     @GetMapping
-    fun all(): List<Card> = repository.findAll()
+    fun all(@RequestParam(required = false) boardGameId: Long?): List<Card> =
+        boardGameId?.let { repository.findByBoardGameId(it) } ?: repository.findAll()
 
     @PostMapping
     fun add(@RequestBody card: Card): Card = repository.save(card)
