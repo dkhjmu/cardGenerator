@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>카드 레이아웃</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 0;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: left;
+      align-items: right;
+      height: 100vh;
+      font-family: Arial, sans-serif;
+    }
+    
+    .page {
+      width: 210mm;  /* A4 size width */
+      height: 297mm; /* A4 size height */
+      padding: 1mm;
+      display: grid;
+      grid-template-columns: repeat(4, 50mm); /* 카드 크기 기준으로 열 설정 */
+      grid-template-rows: repeat(4, 70mm);   /* 카드 크기 기준으로 행 설정 */
+      gap: 2mm; /* 카드 간격을 좁게 설정 */
+      box-sizing: border-box;
+      background-color: #f0f0f0;
+    }
+
+    .card {
+      width: 50mm;  /* 카드 폭 55mm로 설정 */
+      height: 70mm; /* 카드 높이 87mm로 설정 */
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background-color: white;
+      
+      transform-origin: center; /* 회전 기준을 카드 중앙으로 설정 */
+    }
+
+    .card img {
+      width: 30mm;  /* 이미지 폭을 30mm로 설정 */
+      height: auto;
+    }
+
+    .card-body {
+      padding: 10px;
+      text-align: center;
+    }
+
+    .card-body h3 {
+      margin: 10px 0;
+      font-size: 16px;
+      color: #333;
+    }
+
+    .card-body p {
+      font-size: 12px;
+      color: #555;
+    }
+
+    .card-body p strong {
+      font-weight: bold;
+    }
+
+    .card-body p:nth-child(2) {
+      color: #4caf50; /* 장점 부분 색상 */
+    }
+
+    .card-body p:nth-child(3) {
+      color: #f44336; /* 단점 부분 색상 */
+    }
+  </style>
+</head>
+<body>
+  <div class="page" id="page">
+    <!-- Cards will be inserted here -->
+  </div>
+
+  <script>
+    const cards = [
+      {
+        id: 1,
+        companyName: "바나나 주식회사",
+        moto: "유인원들의 대표 음식, 든든한 양식!",
+        pros: "2, 4 라운드 종료시 투자된 토큰당 3 Gold를 배당합니다.",
+        cons: "이 회사는 아무 특징이 없습니다. 카드는 그대로 적용됩니다.",
+        image: "./image/banana.jpg",
+        backImage: "./image/company_back.jpg"
+      },
+      {
+        id: 2,
+        companyName: "킹콩 에너지",
+        moto: "우와오아아와오아우앙!",
+        pros: "+1이 나오면 +3 상승합니다.",
+        cons: "-1이 나오면 -3 하락합니다.",
+        image: "./image/kingkong.jpg",
+        backImage: "./image/company_back.jpg"
+      },
+      {
+        id: 1,
+        companyName: "바나나 주식회사",
+        moto: "유인원들의 대표 음식, 든든한 양식!",
+        pros: "2, 4 라운드 종료시 투자된 토큰당 3 Gold를 배당합니다.",
+        cons: "이 회사는 아무 특징이 없습니다. 카드는 그대로 적용됩니다.",
+        image: "./image/banana.jpg",
+        backImage: "./image/company_back.jpg"
+      },
+      {
+        id: 2,
+        companyName: "킹콩 에너지",
+        moto: "우와오아아와오아우앙!",
+        pros: "+1이 나오면 +3 상승합니다.",
+        cons: "-1이 나오면 -3 하락합니다.",
+        image: "./image/kingkong.jpg",
+        backImage: "./image/company_back.jpg"
+      },
+      {
+        id: 1,
+        companyName: "바나나 주식회사",
+        moto: "유인원들의 대표 음식, 든든한 양식!",
+        pros: "2, 4 라운드 종료시 투자된 토큰당 3 Gold를 배당합니다.",
+        cons: "이 회사는 아무 특징이 없습니다. 카드는 그대로 적용됩니다.",
+        image: "./image/banana.jpg",
+        backImage: "./image/company_back.jpg"
+      },
+      {
+        id: 2,
+        companyName: "킹콩 에너지",
+        moto: "우와오아아와오아우앙!",
+        pros: "+1이 나오면 +3 상승합니다.",
+        cons: "-1이 나오면 -3 하락합니다.",
+        image: "./image/kingkong.jpg",
+        backImage: "./image/company_back.jpg"
+      },
+      {
+        id: 1,
+        companyName: "바나나 주식회사",
+        moto: "유인원들의 대표 음식, 든든한 양식!",
+        pros: "2, 4 라운드 종료시 투자된 토큰당 3 Gold를 배당합니다.",
+        cons: "이 회사는 아무 특징이 없습니다. 카드는 그대로 적용됩니다.",
+        image: "./image/banana.jpg",
+        backImage: "./image/company_back.jpg"
+      },
+      {
+        id: 2,
+        companyName: "킹콩 에너지",
+        moto: "우와오아아와오아우앙!",
+        pros: "+1이 나오면 +3 상승합니다.",
+        cons: "-1이 나오면 -3 하락합니다.",
+        image: "./image/kingkong.jpg",
+        backImage: "./image/company_back.jpg"
+      },
+      {
+        id: 1,
+        companyName: "바나나 주식회사",
+        moto: "유인원들의 대표 음식, 든든한 양식!",
+        pros: "2, 4 라운드 종료시 투자된 토큰당 3 Gold를 배당합니다.",
+        cons: "이 회사는 아무 특징이 없습니다. 카드는 그대로 적용됩니다.",
+        image: "./image/banana.jpg",
+        backImage: "./image/company_back.jpg"
+      },
+      {
+        id: 2,
+        companyName: "킹콩 에너지",
+        moto: "우와오아아와오아우앙!",
+        pros: "+1이 나오면 +3 상승합니다.",
+        cons: "-1이 나오면 -3 하락합니다.",
+        image: "./image/kingkong.jpg",
+        backImage: "./image/company_back.jpg"
+      },
+      {
+        id: 1,
+        companyName: "바나나 주식회사",
+        moto: "유인원들의 대표 음식, 든든한 양식!",
+        pros: "2, 4 라운드 종료시 투자된 토큰당 3 Gold를 배당합니다.",
+        cons: "이 회사는 아무 특징이 없습니다. 카드는 그대로 적용됩니다.",
+        image: "./image/banana.jpg",
+        backImage: "./image/company_back.jpg"
+      },
+      {
+        id: 2,
+        companyName: "킹콩 에너지",
+        moto: "우와오아아와오아우앙!",
+        pros: "+1이 나오면 +3 상승합니다.",
+        cons: "-1이 나오면 -3 하락합니다.",
+        image: "./image/kingkong.jpg",
+        backImage: "./image/company_back.jpg"
+      },
+      {
+        id: 1,
+        companyName: "바나나 주식회사",
+        moto: "유인원들의 대표 음식, 든든한 양식!",
+        pros: "2, 4 라운드 종료시 투자된 토큰당 3 Gold를 배당합니다.",
+        cons: "이 회사는 아무 특징이 없습니다. 카드는 그대로 적용됩니다.",
+        image: "./image/banana.jpg",
+        backImage: "./image/company_back.jpg"
+      },
+      {
+        id: 2,
+        companyName: "킹콩 에너지",
+        moto: "우와오아아와오아우앙!",
+        pros: "+1이 나오면 +3 상승합니다.",
+        cons: "-1이 나오면 -3 하락합니다.",
+        image: "./image/kingkong.jpg",
+        backImage: "./image/company_back.jpg"
+      },
+      {
+        id: 1,
+        companyName: "바나나 주식회사",
+        moto: "유인원들의 대표 음식, 든든한 양식!",
+        pros: "2, 4 라운드 종료시 투자된 토큰당 3 Gold를 배당합니다.",
+        cons: "이 회사는 아무 특징이 없습니다. 카드는 그대로 적용됩니다.",
+        image: "./image/banana.jpg",
+        backImage: "./image/company_back.jpg"
+      },
+      {
+        id: 2,
+        companyName: "킹콩 에너지",
+        moto: "우와오아아와오아우앙!",
+        pros: "+1이 나오면 +3 상승합니다.",
+        cons: "-1이 나오면 -3 하락합니다.",
+        image: "./image/kingkong.jpg",
+        backImage: "./image/company_back.jpg"
+      },
+      {
+        id: 1,
+        companyName: "바나나 주식회사",
+        moto: "유인원들의 대표 음식, 든든한 양식!",
+        pros: "2, 4 라운드 종료시 투자된 토큰당 3 Gold를 배당합니다.",
+        cons: "이 회사는 아무 특징이 없습니다. 카드는 그대로 적용됩니다.",
+        image: "./image/banana.jpg",
+        backImage: "./image/company_back.jpg"
+      },
+      {
+        id: 2,
+        companyName: "킹콩 에너지",
+        moto: "우와오아아와오아우앙!",
+        pros: "+1이 나오면 +3 상승합니다.",
+        cons: "-1이 나오면 -3 하락합니다.",
+        image: "./image/kingkong.jpg",
+        backImage: "./image/company_back.jpg"
+      },
+      {
+        id: 1,
+        companyName: "바나나 주식회사",
+        moto: "유인원들의 대표 음식, 든든한 양식!",
+        pros: "2, 4 라운드 종료시 투자된 토큰당 3 Gold를 배당합니다.",
+        cons: "이 회사는 아무 특징이 없습니다. 카드는 그대로 적용됩니다.",
+        image: "./image/banana.jpg",
+        backImage: "./image/company_back.jpg"
+      },
+      {
+        id: 2,
+        companyName: "킹콩 에너지",
+        moto: "우와오아아와오아우앙!",
+        pros: "+1이 나오면 +3 상승합니다.",
+        cons: "-1이 나오면 -3 하락합니다.",
+        image: "./image/kingkong.jpg",
+        backImage: "./image/company_back.jpg"
+      },
+      {
+        id: 1,
+        companyName: "바나나 주식회사",
+        moto: "유인원들의 대표 음식, 든든한 양식!",
+        pros: "2, 4 라운드 종료시 투자된 토큰당 3 Gold를 배당합니다.",
+        cons: "이 회사는 아무 특징이 없습니다. 카드는 그대로 적용됩니다.",
+        image: "./image/banana.jpg",
+        backImage: "./image/company_back.jpg"
+      },
+      {
+        id: 2,
+        companyName: "킹콩 에너지",
+        moto: "우와오아아와오아우앙!",
+        pros: "+1이 나오면 +3 상승합니다.",
+        cons: "-1이 나오면 -3 하락합니다.",
+        image: "./image/kingkong.jpg",
+        backImage: "./image/company_back.jpg"
+      },
+      {
+        id: 1,
+        companyName: "바나나 주식회사",
+        moto: "유인원들의 대표 음식, 든든한 양식!",
+        pros: "2, 4 라운드 종료시 투자된 토큰당 3 Gold를 배당합니다.",
+        cons: "이 회사는 아무 특징이 없습니다. 카드는 그대로 적용됩니다.",
+        image: "./image/banana.jpg",
+        backImage: "./image/company_back.jpg"
+      },
+      {
+        id: 2,
+        companyName: "킹콩 에너지",
+        moto: "우와오아아와오아우앙!",
+        pros: "+1이 나오면 +3 상승합니다.",
+        cons: "-1이 나오면 -3 하락합니다.",
+        image: "./image/kingkong.jpg",
+        backImage: "./image/company_back.jpg"
+      },
+      {
+        id: 1,
+        companyName: "바나나 주식회사",
+        moto: "유인원들의 대표 음식, 든든한 양식!",
+        pros: "2, 4 라운드 종료시 투자된 토큰당 3 Gold를 배당합니다.",
+        cons: "이 회사는 아무 특징이 없습니다. 카드는 그대로 적용됩니다.",
+        image: "./image/banana.jpg",
+        backImage: "./image/company_back.jpg"
+      },
+      {
+        id: 2,
+        companyName: "킹콩 에너지",
+        moto: "우와오아아와오아우앙!",
+        pros: "+1이 나오면 +3 상승합니다.",
+        cons: "-1이 나오면 -3 하락합니다.",
+        image: "./image/kingkong.jpg",
+        backImage: "./image/company_back.jpg"
+      },
+      {
+        id: 1,
+        companyName: "바나나 주식회사",
+        moto: "유인원들의 대표 음식, 든든한 양식!",
+        pros: "2, 4 라운드 종료시 투자된 토큰당 3 Gold를 배당합니다.",
+        cons: "이 회사는 아무 특징이 없습니다. 카드는 그대로 적용됩니다.",
+        image: "./image/banana.jpg",
+        backImage: "./image/company_back.jpg"
+      },
+      {
+        id: 2,
+        companyName: "킹콩 에너지",
+        moto: "우와오아아와오아우앙!",
+        pros: "+1이 나오면 +3 상승합니다.",
+        cons: "-1이 나오면 -3 하락합니다.",
+        image: "./image/kingkong.jpg",
+        backImage: "./image/company_back.jpg"
+      },
+      {
+        id: 1,
+        companyName: "바나나 주식회사",
+        moto: "유인원들의 대표 음식, 든든한 양식!",
+        pros: "2, 4 라운드 종료시 투자된 토큰당 3 Gold를 배당합니다.",
+        cons: "이 회사는 아무 특징이 없습니다. 카드는 그대로 적용됩니다.",
+        image: "./image/banana.jpg",
+        backImage: "./image/company_back.jpg"
+      },
+      {
+        id: 2,
+        companyName: "킹콩 에너지",
+        moto: "우와오아아와오아우앙!",
+        pros: "+1이 나오면 +3 상승합니다.",
+        cons: "-1이 나오면 -3 하락합니다.",
+        image: "./image/kingkong.jpg",
+        backImage: "./image/company_back.jpg"
+      },
+      {
+        id: 1,
+        companyName: "바나나 주식회사",
+        moto: "유인원들의 대표 음식, 든든한 양식!",
+        pros: "2, 4 라운드 종료시 투자된 토큰당 3 Gold를 배당합니다.",
+        cons: "이 회사는 아무 특징이 없습니다. 카드는 그대로 적용됩니다.",
+        image: "./image/banana.jpg",
+        backImage: "./image/company_back.jpg"
+      },
+      {
+        id: 2,
+        companyName: "킹콩 에너지",
+        moto: "우와오아아와오아우앙!",
+        pros: "+1이 나오면 +3 상승합니다.",
+        cons: "-1이 나오면 -3 하락합니다.",
+        image: "./image/kingkong.jpg",
+        backImage: "./image/company_back.jpg"
+      },
+      // Add more cards as needed
+    ];
+
+    const page = document.getElementById('page');
+
+    cards.forEach((card, index) => {
+      const cardDiv = document.createElement('div');
+      cardDiv.classList.add('card');
+
+      cardDiv.innerHTML = `
+        <img src="${card.image}" alt="${card.companyName}">
+        <div class="card-body">
+          <h3>${card.companyName}</h3>
+          <p><strong>${card.moto}</strong></p>
+          <p><strong>장점:</strong> ${card.pros}</p>
+          <p><strong>단점:</strong> ${card.cons}</p>
+        </div>
+      `;
+
+      page.appendChild(cardDiv);
+    });
+  </script>
+</body>
+</html>

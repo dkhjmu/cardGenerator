@@ -39,6 +39,11 @@ tasks.withType<Test> {
 
 // 프론트엔드 빌드 태스크 설정
 val frontendDir = "$projectDir/frontend"
+val npmCommand = if (System.getProperty("os.name").lowercase().contains("windows")) {
+    "C:\\Program Files\\nodejs\\npm.cmd"
+} else {
+    "npm"
+}
 
 tasks.register<Exec>("npmInstall") {
     workingDir = file(frontendDir)
@@ -46,7 +51,7 @@ tasks.register<Exec>("npmInstall") {
     inputs.file("$frontendDir/package.json")
     inputs.file("$frontendDir/package-lock.json")
     
-    commandLine("npm", "install")
+    commandLine(npmCommand, "install")
 }
 
 tasks.register<Exec>("npmBuild") {
@@ -56,7 +61,7 @@ tasks.register<Exec>("npmBuild") {
     inputs.file("$frontendDir/package.json")
     inputs.file("$frontendDir/package-lock.json")
     
-    commandLine("npm", "run", "build")
+    commandLine(npmCommand, "run", "build")
 }
 
 tasks.register<Copy>("copyFrontendBuild") {
