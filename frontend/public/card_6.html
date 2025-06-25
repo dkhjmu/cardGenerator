@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JSON to Div Layout</title>
+  <style>
+    @page {
+      size: A4 landscape; /* 가로 방향 */
+      margin: 0mm;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    .page {
+      width: 297mm;
+      height: 210mm;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr); /* 4열로 변경 */
+      grid-template-rows: repeat(1, 1fr);   /* 2행 */
+      gap: 2mm;
+      padding: 5mm;
+      box-sizing: border-box;
+    }
+
+    .pair {
+      width: 100%;
+      height: 100%;
+      display: grid;
+      grid-template-columns: repeat(1, 1fr);
+      grid-template-rows: repeat(2, 1fr);
+      gap: 2mm;
+    }
+    
+
+    .card {
+      width: 100%;
+      height: 100%;
+      border: 1px solid black;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      box-sizing: border-box;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    .back {
+      width: 100%;
+      height: 100%;
+      border: 1px solid black;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      box-sizing: border-box;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    .back img {
+      width: 80%; 
+      height: auto;
+      transform: rotate(180deg); 
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .card img {
+      width: 60%;  /* 이미지 크기 조정 */
+      height: auto;
+      max-height: 60%;
+    }
+
+    .card-body {
+      width: 85%;
+      height: 90%;
+      padding: 5px;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 5px;
+      margin: 2px;
+    }
+
+    .card-body h3 {
+      margin: 5px 0;
+      font-size: 14px;
+      color: #333;
+    }
+
+    .card-body p {
+      font-size: 10px;
+      color: #555;
+      margin: 2px 0;
+    }
+
+    .card-body p strong {
+      font-weight: bold;
+    }
+
+    .card-body p:nth-child(2) {
+      color: #4caf50; /* 장점 부분 색상 */
+    }
+
+    .card-body p:nth-child(3) {
+      color: #f44336; /* 단점 부분 색상 */
+    }
+  </style>
+</head>
+<body>
+  <div id="container"></div>
+
+  <script>
+    // JSON 데이터 예시
+    const jsonData = [
+  {
+    "type": "Chorus",
+    "name": "Chorus A",
+    "rating": 0.5,
+    "background": "rgb(255, 80, 80)",
+    "class": "vocal"
+  },
+  {
+    "type": "Chorus",
+    "name": "Chorus B",
+    "rating": 0.5,
+    "background": "rgb(255, 80, 80)",
+    "class": "vocal"
+  },
+  {
+    "type": "Chorus",
+    "name": "Chorus C",
+    "rating": 1.0,
+    "background": "rgb(255, 80, 80)",
+    "class": "vocal"
+  },
+  {
+    "type": "Chorus",
+    "name": "Chorus D",
+    "rating": 1.0,
+    "background": "rgb(255, 80, 80)",
+    "class": "vocal"
+  },
+  {
+    "type": "Chorus",
+    "name": "Chorus E",
+    "rating": 1.0,
+    "background": "rgb(255, 80, 80)",
+    "class": "vocal"
+  },
+  {
+    "type": "Chorus",
+    "name": "Killer Chorus",
+    "rating": 1.5,
+    "background": "rgb(255, 80, 80)",
+    "class": "vocal"
+  },
+  {
+    "type": "Chorus",
+    "name": "Encore Chorus",
+    "rating": 1.5,
+    "background": "rgb(255, 80, 80)",
+    "class": "vocal"
+  }
+];
+
+    const container = document.getElementById('container');
+
+    function createPage(items) {
+      const page = document.createElement('div');
+      page.className = 'page';
+            
+      items.forEach((card, index) => {
+        const pair = document.createElement('div');
+        pair.className = 'pair';
+        const div = document.createElement('div');
+        if (card.type == "Chorus") {
+          div.className = 'card';
+          div.innerHTML = `
+            <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background-color: ${card.background};">
+              <div class="card-body">
+                <h3>${card.name}</h3>
+                <h1>${'⭐'.repeat(card.rating * 2)}</h1>
+              </div>
+            </div>
+          `;
+        } else {
+          
+        }
+
+        const back = document.createElement('div');
+        back.className = 'back';
+        back.innerHTML = `
+          <div class="card-body">
+              <h1>뒷면</h1>
+          </div>
+        `;
+
+        pair.appendChild(div);
+        pair.appendChild(back);
+
+        page.appendChild(pair);
+      });
+
+      container.appendChild(page);
+    }
+
+    function renderPages(data) {
+      const itemsPerPage = 4; // 4x2 그리드
+
+      for (let i = 0; i < data.length; i += itemsPerPage) {
+        const pageItems = data.slice(i, i + itemsPerPage);
+        createPage(pageItems);
+      }
+    }
+
+    renderPages(jsonData);
+  </script>
+</body>
+</html>

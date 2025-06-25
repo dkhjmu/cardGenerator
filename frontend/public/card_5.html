@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JSON to Div Layout</title>
+  <style>
+    @page {
+      size: A4 landscape; /* 가로 방향 */
+      margin: 0mm;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    .page {
+      width: 297mm;
+      height: 210mm;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr); /* 4열로 변경 */
+      grid-template-rows: repeat(2, 1fr);   /* 2행 */
+      gap: 2mm;
+      padding: 5mm;
+      box-sizing: border-box;
+    }
+
+    .card {
+      width: 100%;
+      height: 100%;
+      border: 1px solid black;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      box-sizing: border-box;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    .back {
+      width: 100%;
+      height: 100%;
+      border: 1px solid black;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      box-sizing: border-box;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    .back img {
+      width: 80%; 
+      height: auto;
+      transform: rotate(180deg); 
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .card img {
+      width: 60%;  /* 이미지 크기 조정 */
+      height: auto;
+      max-height: 60%;
+    }
+
+    .card-body {
+      padding: 5px;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 5px;
+      margin: 2px;
+    }
+
+    .card-body h3 {
+      margin: 5px 0;
+      font-size: 14px;
+      color: #333;
+    }
+
+    .card-body p {
+      font-size: 10px;
+      color: #555;
+      margin: 2px 0;
+    }
+
+    .card-body p strong {
+      font-weight: bold;
+    }
+
+    .card-body p:nth-child(2) {
+      color: #4caf50; /* 장점 부분 색상 */
+    }
+
+    .card-body p:nth-child(3) {
+      color: #f44336; /* 단점 부분 색상 */
+    }
+  </style>
+</head>
+<body>
+  <div id="container"></div>
+
+  <script>
+    // JSON 데이터 예시
+    const jsonData = [
+  {
+    "companyName": "송송전자",
+    "type": "전자",
+    "tags": ["수출", "유행"]
+  },
+  {
+    "companyName": "신나은행",
+    "type": "금융",
+    "tags": ["내수", "필수소비", "지속"]
+  },
+  {
+    "companyName": "양파증권",
+    "type": "금융",
+    "tags": ["신기술", "유행"]
+  },
+  {
+    "companyName": "다판다자동차",
+    "type": "제조/유통",
+    "tags": ["내수"]
+  },
+  {
+    "image": "./image/color1.jpg"
+  },
+  {
+    "image": "./image/color1.jpg"
+  },
+  {
+    "image": "./image/color1.jpg"
+  },
+  {
+    "image": "./image/color1.jpg"
+  },
+  {
+    "companyName": "땅파건설",
+    "type": "건설",
+    "tags": ["지속"]
+  },
+  {
+    "companyName": "쓴맛제약",
+    "type": "화학/바이오",
+    "tags": ["내수", "유행"]
+  },
+  {
+    "companyName": "톡톡포탈",
+    "type": "IT",
+    "tags": ["내수", "신기술"]
+  },
+  {
+    "companyName": "노잼게임즈",
+    "type": "IT",
+    "tags": ["수출"]
+  },
+  {
+    "image": "./image/color1.jpg"
+  },
+  {
+    "image": "./image/color1.jpg"
+  },
+  {
+    "image": "./image/color1.jpg"
+  },
+  {
+    "image": "./image/color1.jpg"
+  },
+  {
+    "companyName": "거북인터넷",
+    "type": "IT",
+    "tags": ["필수소비", "지속"]
+  },
+  {
+    "companyName": "거산조선",
+    "type": "제조/유통",
+    "tags": ["수출"]
+  },
+  {
+    "companyName": "중박엔터",
+    "type": "컨텐츠",
+    "tags": ["수출", "지속"]
+  },
+  {
+    "companyName": "다오티비",
+    "type": "컨텐츠",
+    "tags": ["필수소비", "유행"]
+  },
+  {
+    "image": "./image/color1.jpg"
+  },
+  {
+    "image": "./image/color1.jpg"
+  },
+  {
+    "image": "./image/color1.jpg"
+  },
+  {
+    "image": "./image/color1.jpg"
+  },
+  {
+    "companyName": "우산화학",
+    "type": "화학/바이오",
+    "tags": ["신기술"]
+  },
+  {
+    "companyName": "사막건설",
+    "type": "건설",
+    "tags": ["수출"]
+  },
+  {
+    "companyName": "기억반도체",
+    "type": "전자",
+    "tags": ["수출", "신기술"]
+  },
+  {
+    "companyName": "흑우설탕",
+    "type": "제조/유통",
+    "tags": ["내수", "필수소비", "지속"]
+  },
+  {
+    "image": "./image/color1.jpg"
+  },
+  {
+    "image": "./image/color1.jpg"
+  },
+  {
+    "image": "./image/color1.jpg"
+  },
+  {
+    "image": "./image/color1.jpg"
+  },
+];
+
+    const container = document.getElementById('container');
+
+    // 배경 이미지 배열
+    const backgroundImages = [
+      'image/color1.jpg',
+      'image/color2.jpg', 
+      'image/color3.jpg',
+      'image/color4.jpg'
+    ];
+
+    function createPage(items) {
+      const page = document.createElement('div');
+      page.className = 'page';
+
+      items.forEach((card, index) => {
+        const div = document.createElement('div');
+        
+        // 배경 이미지 순환 적용
+        const bgIndex = index % backgroundImages.length;
+        const backgroundImage = backgroundImages[bgIndex];
+        
+        if (card.companyName != null) {
+          div.className = 'card';
+          div.innerHTML = `
+            <img src="image/${card.companyName.toLowerCase().replace(/[^a-zA-Z가-힣]/g, '')}.jpg" alt="${card.companyName}" onerror="this.style.display='none'">
+            <div class="card-body">
+              <h1>${card.companyName}</h1>
+              <h3><strong>타입:</strong> ${card.type}</h3>
+              <h3><strong>태그:</strong> ${card.tags.join(', ')}</h3>
+            </div>
+          `;
+        } else {
+          if (card.effect != null) {
+            div.className = 'card';
+            div.style.backgroundImage = `url(${backgroundImage})`;
+            div.innerHTML = `
+              <img src="${card.image}" alt="${card.cardName}" onerror="this.style.display='none'">
+              <div class="card-body">
+                <h3>${card.effect}</h3>
+              </div>
+            `;
+          } else if (card.value != null) {
+            div.className = 'card';
+            div.style.backgroundImage = `url(${backgroundImage})`;
+            div.innerHTML = `
+              <div class="card-body">
+                <h2>${card.value}</h2>
+                <br/><br/>
+                <p>이 카드는 총 ${card.count}장 있습니다.</p>
+              </div>
+            `;
+          } else {
+            div.className = 'back';
+            div.style.backgroundImage = `url(${backgroundImage})`;
+            div.innerHTML = `
+              <img src="${card.image}" alt="카드 뒷면" onerror="this.style.display='none'">
+            `;
+          }
+        }
+
+        page.appendChild(div);
+      });
+
+      container.appendChild(page);
+    }
+
+    function renderPages(data) {
+      const itemsPerPage = 8; // 4x2 그리드
+
+      for (let i = 0; i < data.length; i += itemsPerPage) {
+        const pageItems = data.slice(i, i + itemsPerPage);
+        createPage(pageItems);
+      }
+    }
+
+    renderPages(jsonData);
+  </script>
+</body>
+</html>
