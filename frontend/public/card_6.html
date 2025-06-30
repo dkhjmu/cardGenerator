@@ -161,13 +161,15 @@
 
   <script>
     const jsonData = [
-      { "type": "Chorus", "name": "Chorus", "rating": 0.5, "background": "rgb(255, 80, 80)", "class": "vocal" },
-      { "type": "Chorus", "name": "Chorus", "rating": 0.5, "background": "rgb(255, 80, 80)", "class": "vocal" },
-      { "type": "Chorus", "name": "Chorus", "rating": 1.0, "background": "rgb(255, 80, 80)", "class": "vocal" },
-      { "type": "Chorus", "name": "Chorus", "rating": 1.0, "background": "rgb(255, 80, 80)", "class": "vocal" },
-      { "type": "Chorus", "name": "Chorus", "rating": 1.0, "background": "rgb(255, 80, 80)", "class": "vocal" },
-      { "type": "Chorus", "name": "Chorus", "rating": 1.5, "background": "rgb(255, 80, 80)", "class": "vocal" },
-      { "type": "Chorus", "name": "Chorus", "rating": 1.5, "background": "rgb(255, 80, 80)", "class": "vocal" }
+      { "type": "Chorus", "name": "Chorus", "rating": 0.5, "background": "rgb(255, 80, 80)", "class": "vocal", "image": "image/card/chorus.png" },
+      { "type": "Verse", "name": "Verse", "rating": 0.5, "background": "rgb(255, 80, 80)", "class": "vocal", "image": "image/card/verse.png" },
+      { "type": "Hook", "name": "Hook", "rating": 0.5, "background": "rgb(255, 80, 80)", "class": "vocal", "image": "image/card/hook.png" },
+      { "type": "Solo", "name": "Solo", "rating": 0.5, "background": "rgb(255, 80, 80)", "class": "vocal", "image": "image/card/solo.png" },
+      { "type": "Flow", "name": "Flow", "rating": 0.5, "background": "rgb(255, 80, 80)", "class": "rap", "image": "image/card/flow.png" },
+      { "type": "Rhyme", "name": "Rhyme", "rating": 0.5, "background": "rgb(255, 80, 80)", "class": "rap", "image": "image/card/rhyme.png" },
+      { "type": "Punchline", "name": "Punchline", "rating": 0.5, "background": "rgb(255, 80, 80)", "class": "rap", "image": "image/card/punchline.png" },
+      { "type": "Flow", "name": "Flow", "rating": 0.5, "background": "rgb(255, 80, 80)", "class": "rap", "image": "image/card/flow.png" },
+      { "type": "Flow", "name": "Flow", "rating": 0.5, "background": "rgb(255, 80, 80)", "class": "rap", "image": "image/card/flow.png" },
     ];
 
     const container = document.getElementById('container');
@@ -220,6 +222,7 @@
             <div class="card-body">
               <h3>${card.name}</h3>
               <h1>${createStarRating(card.rating)}</h1>
+              <img src="${card.image}" alt="${card.name}">
             </div>
 
             <div class="card-icon-right ${card.class}">
