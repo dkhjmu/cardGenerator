@@ -161,16 +161,22 @@
 
   <script>
     const jsonData = [
-      { "type": "Chorus", "name": "Chorus", "rating": 0.5, "background": "rgb(255, 80, 80)", "class": "vocal", "image": "image/card/chorus.png" },
-      { "type": "Verse", "name": "Verse", "rating": 0.5, "background": "rgb(255, 80, 80)", "class": "vocal", "image": "image/card/verse.png" },
-      { "type": "Hook", "name": "Hook", "rating": 0.5, "background": "rgb(255, 80, 80)", "class": "vocal", "image": "image/card/hook.png" },
-      { "type": "Solo", "name": "Solo", "rating": 0.5, "background": "rgb(255, 80, 80)", "class": "vocal", "image": "image/card/solo.png" },
-      { "type": "Flow", "name": "Flow", "rating": 0.5, "background": "rgb(255, 80, 80)", "class": "rap", "image": "image/card/flow.png" },
-      { "type": "Rhyme", "name": "Rhyme", "rating": 0.5, "background": "rgb(255, 80, 80)", "class": "rap", "image": "image/card/rhyme.png" },
-      { "type": "Punchline", "name": "Punchline", "rating": 0.5, "background": "rgb(255, 80, 80)", "class": "rap", "image": "image/card/punchline.png" },
-      { "type": "Flow", "name": "Flow", "rating": 0.5, "background": "rgb(255, 80, 80)", "class": "rap", "image": "image/card/flow.png" },
-      { "type": "Flow", "name": "Flow", "rating": 0.5, "background": "rgb(255, 80, 80)", "class": "rap", "image": "image/card/flow.png" },
+      { "type": "Chorus",     "name": "Chorus",     "rating": 0.5, "background": "rgb(255, 80, 80)",  "class": "vocal", "icon": "🎵", "image": "image/card/chorus.png" },
+      { "type": "Verse",      "name": "Verse",      "rating": 0.5, "background": "rgb(255, 160, 160)", "class": "vocal", "icon": "🎵", "image": "image/card/verse.png" },
+      { "type": "Hook",       "name": "Hook",       "rating": 0.5, "background": "rgb(255, 120, 120)", "class": "vocal", "icon": "🎵", "image": "image/card/hook.png" },
+      { "type": "Solo",       "name": "Solo",       "rating": 0.5, "background": "rgb(255, 100, 100)", "class": "vocal", "icon": "🎵", "image": "image/card/solo.png" },
+
+      { "type": "Flow",       "name": "Flow",       "rating": 0.5, "background": "rgb(80, 130, 255)",  "class": "rap",   "icon": "🎤", "image": "image/card/flow.png" },
+      { "type": "Rhyme",      "name": "Rhyme",      "rating": 0.5, "background": "rgb(120, 100, 255)", "class": "rap",   "icon": "🎤", "image": "image/card/rhyme.png" },
+      { "type": "Punchline",  "name": "Punchline",  "rating": 0.5, "background": "rgb(60, 60, 200)",   "class": "rap",   "icon": "🎤", "image": "image/card/punchline.png" },
+      { "type": "Flow",       "name": "Flow",       "rating": 0.5, "background": "rgb(100, 140, 255)", "class": "rap",   "icon": "🎤", "image": "image/card/flow.png" },
+
+      { "type": "DanceBreak", "name": "Dance Break","rating": 0.5, "background": "rgb(80, 200, 120)",  "class": "dance", "icon": "💃", "image": "image/card/dancebreak.png" },
+      { "type": "Signature",  "name": "Signature",  "rating": 0.5, "background": "rgb(140, 220, 160)", "class": "dance", "icon": "💃", "image": "image/card/signature.png" },
+      { "type": "Highlight",  "name": "Highlight",  "rating": 0.5, "background": "rgb(60, 160, 120)",  "class": "dance", "icon": "💃", "image": "image/card/highlight.png" }
     ];
+
+
 
     const container = document.getElementById('container');
 
@@ -216,7 +222,7 @@
               flex-direction: column;
             ">
             <div class="card-icon-left ${card.class}">
-              🎵
+              ${card.icon}
             </div>
 
             <div class="card-body">
@@ -226,7 +232,7 @@
             </div>
 
             <div class="card-icon-right ${card.class}">
-              🎵
+              ${card.icon}
             </div>
           </div>
         `;
