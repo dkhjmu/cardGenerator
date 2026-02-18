@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Greedy Wizards Card Generator</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 0;
+            /* 크롬 머릿글/바닥글 제거 */
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+        body { margin: 0; padding: 0; background-color: #f0f0f0; font-family: 'Pretendard', sans-serif; }
+
+        @media print {
+            body { background: none; }
+            .page {
+                box-shadow: none !important;
+                border: none !important;
+                outline: none !important;
+                margin: 0 !important;
+                padding: 1mm;
+                width: 210mm;
+                height: 297mm;
+                page-break-after: always;
+            }
+            .page:last-child { page-break-after: avoid; }
+        }
+
+        .page {
+            width: 210mm; height: 297mm; padding: 5mm; margin: 5mm auto;
+            background: white; box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            display: grid; grid-template-columns: repeat(2, 83mm); /* 가로 2칸 (84mm 카드) */
+            grid-gap: 1mm 1mm; justify-content: center; align-content: start; box-sizing: border-box;
+        }
+
+        /* 카드 기본 규격 (53mm x 84mm) → 가로로 눕힘 */
+        .card {
+            width: 83mm; height: 48mm;
+            border: 0.1mm solid #000; border-radius: 3mm;
+            overflow: clip; position: relative; box-sizing: border-box;
+            background: white;
+        }
+
+        /* 텍스트 90도 회전 */
+        .content-container {
+            width: 48mm; height: 83mm;
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) rotate(90deg);
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            padding: 5mm; box-sizing: border-box;
+        }
+
+        /* 앞면 상세 디자인 */
+        .card-front {
+            display: flex; flex-direction: column-reverse; /* 제목이 아래로 가게 */
+            width: 100%; height: 100%;
+            text-align: center;
+        }
+
+        .card-front .description {
+            font-size: 10pt; line-height: 1.5;
+            flex-grow: 1; display: flex; align-items: center; justify-content: center;
+            word-break: keep-all; padding: 0 5mm;
+        }
+
+        /* 뒷면 상세 디자인 */
+        .card-back {
+            background: white;
+            width: 100%; height: 100%;
+            display: flex; align-items: center; justify-content: center;
+            transform: rotate(180deg); /* 글씨 반대 방향 */
+        }
+
+        .logo-box {
+            border: 1.5px solid #ffd700; padding: 3mm 6mm;
+            text-align: center; color: #ffd700;
+        }
+
+        .logo-box .brand {
+            font-weight: bold; font-size: 10pt; letter-spacing: 1.5px;
+            display: block; line-height: 1.2;
+        }
+    </style>
+</head>
+<body>
+
+<div id="pagesContainer"></div>
+
+<script>
+    // 이 JSON 데이터를 수정하여 카드 내용을 바꾸세요
+    const cardData = [
+        { title: "불꽃 작대기", content: "앞으로 불을 뿜어 직선상의 적에게 화염 피해를 입힙니다." },
+        { title: "얼음 보호막", content: "주변에 냉기 에너지를 둘러 발사체를 방어합니다." },
+        { title: "마력 폭발", content: "자신의 주변 모든 적을 밀쳐내고 피해를 줍니다." },
+        { title: "마력 폭발", content: "자신의 주변 모든 적을 밀쳐내고 피해를 줍니다." },
+        { title: "신속의 장화", content: "잠시 동안 이동 속도가 비약적으로 상승합니다." },
+        { title: "테스트 카드 6", content: "6번째 카드 - 새 페이지에 표시됩니다." },
+        { title: "테스트 카드 7", content: "7번째 카드입니다." }
+    ];
+
+    const CARDS_PER_PAGE = 5; // 페이지당 카드 쌍 수 (인쇄 여백 고려)
+    const pagesContainer = document.getElementById('pagesContainer');
+
+    // 페이지 생성 함수
+    function createPage() {
+        const page = document.createElement('div');
+        page.className = 'page';
+        pagesContainer.appendChild(page);
+        return page;
+    }
+
+    // 카드 HTML 생성 함수
+    function createCardHtml(data) {
+        return `
+            <div class="card">
+                <div class="content-container">
+                    <div class="card-back">
+                        <div class="logo-box">
+                            <span class="brand">GREEDY</span>
+                            <span class="brand">WIZARDS</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="content-container">
+                    <div class="card-front">
+                        <div class="description">${data.content}</div>
+                        <div>${data.title}</div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    // 카드 배치
+    let currentPage = null;
+    cardData.forEach((data, index) => {
+        // 5개마다 새 페이지 생성
+        if (index % CARDS_PER_PAGE === 0) {
+            currentPage = createPage();
+        }
+        currentPage.innerHTML += createCardHtml(data);
+    });
+</script>
+</body>
+</html>
