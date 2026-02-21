@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>날씨</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 0;
+            /* 크롬 머릿글/바닥글 제거 */
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+        body { margin: 0; padding: 0; background-color: #f0f0f0; font-family: 'Pretendard', sans-serif; }
+
+        @media print {
+            body { background: none; }
+            .page {
+                box-shadow: none !important;
+                border: none !important;
+                outline: none !important;
+                margin: 0 !important;
+                padding: 1mm;
+                width: 210mm;
+                height: 297mm;
+                page-break-after: always;
+            }
+            .page:last-child { page-break-after: avoid; }
+        }
+
+        .page {
+            width: 210mm; height: 297mm; padding: 5mm; margin: 5mm auto;
+            background: white; box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            display: grid; grid-template-columns: repeat(2, 83mm); /* 가로 2칸 (84mm 카드) */
+            grid-gap: 1mm 1mm; justify-content: center; align-content: start; box-sizing: border-box;
+        }
+
+        /* 카드 기본 규격 (53mm x 84mm) → 가로로 눕힘 */
+        .card {
+            width: 83mm; height: 50mm;
+            border: 0.1mm solid #000; border-radius: 3mm;
+            overflow: clip; position: relative; box-sizing: border-box;
+            background: white;
+        }
+
+        /* 텍스트 90도 회전 */
+        .content-container {
+            width: 50mm; height: 83mm;
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) rotate(90deg);
+            display: flex; flex-direction: column;
+            /* 패딩을 5mm -> 2mm로 줄임 */
+            padding: 2mm; box-sizing: border-box;
+        }
+
+        /* 앞면 상세 디자인 */
+        .card-front {
+            display: flex;
+            flex-direction: column;
+            height: 100%; /* 부모 높이 전체 사용 */
+            padding: 0; /* 내부 패딩 제거 */
+            text-align: center;
+        }
+
+        .job-title {
+            font-size: 1.4rem;
+            margin: 0 0 10px 0;
+            font-weight: bold;
+        }
+
+        .illustration-box {
+            width: 100%;
+            flex-grow: 1; /* 남는 공간을 일러스트가 다 차지하도록 함 */
+            min-height: 100px; /* 최소 높이 보장 */
+            background-color: #f0f0f0;
+            background-size: cover;
+            position: relative; /* 성향 배지 배치를 위해 필요 */
+            border-radius: 3px;
+        }
+
+        .description {
+            font-size: 0.9rem;
+            line-height: 1.2;
+            padding: 8px 0;
+            word-break: keep-all; /* 단어 단위 줄바꿈으로 깔끔하게 */
+            order: 3;
+        }
+
+        .alignment-badge {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            color: white;
+        }
+
+        .alignment-badge.good { background-color: #3498db; } /* 선: 파란색 */
+        .alignment-badge.evil { background-color: #e74c3c; } /* 악: 빨간색 */
+
+        .resource-bar {
+            font-size: 1.5rem; /* 아이콘 크기 키움 */
+            display: flex;
+            justify-content: center; /* 중앙 정렬 */
+            gap: 10px; /* 아이콘 사이 간격 */
+            padding-bottom: 5px;
+            order: 4; /* 맨 아래 */
+        }
+
+        /* 뒷면 상세 디자인 */
+        .card-back {
+            background: white;
+            width: 100%; height: 100%;
+            display: flex; align-items: center; justify-content: center;
+            transform: rotate(180deg); /* 글씨 반대 방향 */
+        }
+
+        .logo-box {
+            border: 1.5px solid #ffd700; padding: 3mm 6mm;
+            text-align: center; color: #ffd700;
+        }
+
+        .logo-box .brand {
+            font-weight: bold; font-size: 10pt; letter-spacing: 1.5px;
+            display: block; line-height: 1.2;
+        }
+    </style>
+</head>
+<body>
+
+<div id="pagesContainer"></div>
+
+<script>
+    // 이 JSON 데이터를 수정하여 카드 내용을 바꾸세요
+    const cardData = [
+    {
+        "title": "☀️ 맑음",
+        "content": "길 카드를 공개하여 무슨 길이 있는지 확인한 후 다시 섞어 나눠가집니다. 나그네 성공시 추가로 🪙를 2개 더 받습니다.",
+        "illustration": "sunny_road.png"
+    },
+    {
+        "title": "☀️ 맑음",
+        "content": "길 카드를 공개하여 무슨 길이 있는지 확인한 후 다시 섞어 나눠가집니다. 나그네 성공시 추가로 🧿를 1개 더 받습니다.",
+        "illustration": "sunny_breeze.png"
+    },
+    {
+        "title": "🌫️ 안개",
+        "content": "길 카드를 정해진 장수보다 1장 더 뽑고 모두 공개하지 않습니다.",
+        "illustration": "foggy_mountain.png"
+    }, 
+    {
+        "title": "🌧️ 폭우",
+        "content": "길 카드를 공개하지 않고, 아무 소리를 낼 수 없습니다. 행동만으로 나그네를 부릅니다.",
+        "illustration": "heavy_rain.png"
+    },
+    {
+        "title": "🌑 어둠",
+        "content": "길 카드를 공개하지 않고, 나그네는 눈을 감고 길을 선택합니다. ",
+        "illustration": "deep_night.png"
+    }
+    ];
+
+    const CARDS_PER_PAGE = 5; // 페이지당 카드 쌍 수 (인쇄 여백 고려)
+    const pagesContainer = document.getElementById('pagesContainer');
+
+    // 페이지 생성 함수
+    function createPage() {
+        const page = document.createElement('div');
+        page.className = 'page';
+        pagesContainer.appendChild(page);
+        return page;
+    }
+
+    // 카드 HTML 생성 함수
+    function createCardHtml(data) {
+        
+        return `
+            <div class="card">
+                <div class="content-container">
+                    <div class="card-back" style="background-image: url('./image/weather_back.png'); background-size: cover; background-position: center;">
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="content-container">
+                    <div class="card-front">
+                        <h2 class="job-title">${data.title}</h2>
+                        
+                        <div class="illustration-box" style="background-image: url('./image/${data.illustration}')">
+                            </div>
+
+                        <div class="description">${data.content}</div>
+                        
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    // 카드 배치
+    let currentPage = null;
+    cardData.forEach((data, index) => {
+        // 5개마다 새 페이지 생성
+        if (index % CARDS_PER_PAGE === 0) {
+            currentPage = createPage();
+        }
+        currentPage.innerHTML += createCardHtml(data);
+    });
+</script>
+</body>
+</html>
