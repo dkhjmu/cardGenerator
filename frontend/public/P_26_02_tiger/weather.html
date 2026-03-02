@@ -142,7 +142,7 @@
     },
     {
         "title": "☀️ 맑음",
-        "content": "길 카드를 공개하여 무슨 길이 있는지 확인한 후 다시 섞어 나눠가집니다. 나그네 성공시 추가로 🧿를 1개 더 받습니다.",
+        "content": "길 카드를 공개하여 무슨 길이 있는지 확인한 후 다시 섞어 나눠가집니다. 나그네 성공시 추가로 🧿를 1개 받습니다.",
         "illustration": "sunny_breeze.png"
     },
     {
@@ -157,12 +157,17 @@
     },
     {
         "title": "🌑 어둠",
-        "content": "길 카드를 공개하지 않고, 나그네는 눈을 감고 길을 선택합니다. ",
+        "content": "길 카드를 2장뽑아 1장을 고르고, 나그네는 눈을 감고 길을 선택합니다. ",
+        "illustration": "deep_night.png"
+    },
+    {
+        "title": "🌑 어둠",
+        "content": "나그네 먼저 카드를 3장 공개하고 1장을 비공개로 선택합니다.",
         "illustration": "deep_night.png"
     }
     ];
 
-    const CARDS_PER_PAGE = 5; // 페이지당 카드 쌍 수 (인쇄 여백 고려)
+    const CARDS_PER_PAGE = 4; // 페이지당 카드 쌍 수 (인쇄 여백 고려)
     const pagesContainer = document.getElementById('pagesContainer');
 
     // 페이지 생성 함수
