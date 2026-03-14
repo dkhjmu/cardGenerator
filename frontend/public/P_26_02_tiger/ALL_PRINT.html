@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>나그네 - 전체 카드</title>
+    <style>
+        @page { size: A4; margin: 0; }
+
+        body { margin: 0; padding: 0; background-color: #f0f0f0; font-family: 'Pretendard', sans-serif; }
+
+        @media print {
+            body { background: none; }
+            .page {
+                box-shadow: none !important;
+                margin: 0 !important;
+                padding: 2mm !important;
+                width: 210mm !important;
+                height: 297mm !important;
+                grid-gap: 0mm 1mm !important;
+                page-break-after: always;
+            }
+            .page:last-child { page-break-after: avoid; }
+            .card              { height: 46mm !important; }
+            .content-container { width: 46mm !important; }
+        }
+
+        .page {
+            width: 210mm; height: 297mm;
+            padding: 3mm; margin: 5mm auto;
+            background: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            display: grid;
+            grid-template-columns: repeat(2, 83mm);
+            grid-gap: 0.5mm 1mm;
+            justify-content: center;
+            align-content: start;
+            box-sizing: border-box;
+        }
+
+        .card {
+            width: 83mm; height: 48mm;
+            border: 0.1mm solid #000;
+            border-radius: 3mm;
+            overflow: hidden;
+            position: relative;
+            box-sizing: border-box;
+            background: white;
+        }
+
+        .content-container {
+            width: 48mm; height: 83mm;
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) rotate(90deg);
+            display: flex; flex-direction: column;
+            padding: 2mm; box-sizing: border-box;
+            overflow: hidden;
+        }
+
+        .card-front {
+            display: flex; flex-direction: column;
+            height: 100%; overflow: hidden; text-align: center;
+        }
+
+        .card-title {
+            font-size: 1.2rem; margin: 0 0 3px 0;
+            font-weight: bold; flex-shrink: 0;
+        }
+
+        .illustration-box {
+            width: 100%; flex: 1 1 0; min-height: 0;
+            background-color: #e8e8e8;
+            background-size: cover; background-position: center;
+            position: relative; border-radius: 3px;
+        }
+
+        .description {
+            font-size: 0.70rem; line-height: 1.25;
+            padding: 3px 0; word-break: keep-all; flex-shrink: 0;
+        }
+
+        .alignment-badge {
+            position: absolute; top: 4px; right: 4px;
+            padding: 1px 6px; border-radius: 4px;
+            font-size: 0.75rem; color: white;
+        }
+        .alignment-badge.good    { background-color: #3498db; }
+        .alignment-badge.evil    { background-color: #e74c3c; }
+        .alignment-badge.neutral { background-color: #888; }
+
+        .resource-bar {
+            font-size: 1.1rem; display: flex;
+            justify-content: center; gap: 6px;
+            padding-bottom: 2px; flex-shrink: 0;
+        }
+
+        .card-back {
+            width: 100%; height: 100%;
+            transform: rotate(180deg);
+            background-size: cover; background-position: center;
+        }
+    </style>
+</head>
+<body>
+<div id="pagesContainer"></div>
+<script>
+/* ── 전체 카드 데이터 (순서대로 출력됨) ── */
+const allCards = [
+
+    /* 나그네 카드 */
+    { title:"보부상",       content:"위험 길손(창귀·호랑이·산적) 없이 통과",                                         back:"way_back.png", illustration:"merchant1.png", alignment:"선", coin:1, soul:1 },
+    { title:"보부상",       content:"위험 길손(창귀·호랑이·산적) 없이 통과",                                         back:"way_back.png", illustration:"merchant2.png", alignment:"악", coin:1, soul:1 },
+    { title:"보부상",       content:"위험 길손(창귀·호랑이·산적) 없이 통과",                                         back:"way_back.png", illustration:"merchant1.png", alignment:"선", coin:2, soul:0 },
+    { title:"보부상",       content:"위험 길손(창귀·호랑이·산적) 없이 통과",                                         back:"way_back.png", illustration:"merchant2.png", alignment:"악", coin:2, soul:0 },
+    { title:"보부상",       content:"위험 길손(창귀·호랑이·산적) 없이 통과",                                         back:"way_back.png", illustration:"merchant1.png", alignment:"선", coin:3, soul:0 },
+    { title:"보부상",       content:"위험 길손(창귀·호랑이·산적) 없이 통과",                                         back:"way_back.png", illustration:"merchant2.png", alignment:"악", coin:3, soul:0 },
+    { title:"도사",         content:"창귀 길손 찾아내기 (호랑이·산적에게 무력)",                                     back:"way_back.png", illustration:"shaman1.png",  alignment:"선", coin:3, soul:1 },
+    { title:"도사",         content:"창귀 길손 찾아내기 (호랑이·산적에게 무력)",                                     back:"way_back.png", illustration:"shaman2.png",  alignment:"악", coin:3, soul:1 },
+    { title:"착호갑사",     content:"호랑이·산적 찾아내기 (창귀에게 무력)",                                          back:"way_back.png", illustration:"gunner.png",   alignment:"선", coin:4, soul:1 },
+    { title:"착호갑사",     content:"호랑이·산적 찾아내기 (창귀에게 무력)",                                          back:"way_back.png", illustration:"gunner2.png",  alignment:"악", coin:4, soul:1 },
+    { title:"창귀(나그네)", content:"5인 이상 전용, 등짐꾼·밀수꾼 찾아내어 영혼 뺏기 (나머지에게 무력)",            back:"way_back.png", illustration:"ghost.png",    alignment:"-",  coin:0, soul:1 },
+
+    /* 길 카드 */
+    { title:"등짐꾼", content:"나그네가 보부상이라면, 나그네·등짐꾼 모두 🪙 +2. <br/>선택 안 됐을 때: 등짐꾼 🪙 +1",        back:"pass_back.png", illustration:"supporter.png" },
+    { title:"스님",   content:"나그네 🧿 +1 (공급처에서), 스님 🪙 +2. 나그네가 창귀(나그네)라면 스님 🧿 +1 추가.",        back:"pass_back.png", illustration:"monk.png" },
+    { title:"밀수꾼", content:"밀수꾼 🪙 -1, 나그네 🪙 +1. <br/>선택 안 됐을 때: 밀수꾼 🪙 +3 (공급처에서).",             back:"pass_back.png", illustration:"smuggler.png" },
+    { title:"산적떼", content:"나그네 🪙 -4, 산적떼 🪙 +4 (부족하면 가진 만큼 전부). <br/>선택 안 됐을 때: 산적떼 🪙 -1", back:"pass_back.png", illustration:"thief.png" },
+    { title:"산적들", content:"나그네 🪙 -2, 산적들 🪙 +2 (부족하면 가진 만큼 전부).",                                     back:"pass_back.png", illustration:"thief.png" },
+    { title:"호랑이", content:"나그네 🧿 -1, 호랑이 🧿 +2 (공급처에서). 추가 창귀 카드 1장을 길손 덱에 추가.",            back:"pass_back.png", illustration:"tiger.png" },
+    { title:"여우",   content:"나그네(선): 여우 🧿 -1, 나그네 🧿 +1. / 나그네(악): 나그네 🧿 -2, 여우 🧿 +2.",           back:"pass_back.png", illustration:"fox.png" },
+    { title:"도깨비", content:"나그네(선): 나그네 🪙 +3 (공급처에서), 도깨비 🧿 +1. / 나그네(악): 나그네 🧿 -1, 도깨비 🧿 +1.", back:"pass_back.png", illustration:"dokebi.png" },
+    { title:"창귀",   content:"나그네 🧿 -1. 창귀 🧿 +1, 추가 창귀 카드 1장을 길손 덱에 추가.",                           back:"pass_back.png", illustration:"ghost.png" },
+    { title:"창귀",   content:"나그네 🧿 -1. 창귀 🧿 +1, 추가 창귀 카드 1장을 길손 덱에 추가.",                           back:"pass_back.png", illustration:"ghost.png" },
+    { title:"창귀",   content:"나그네 🧿 -1. 창귀 🧿 +1, 추가 창귀 카드 1장을 길손 덱에 추가.",                           back:"pass_back.png", illustration:"ghost.png" },
+    { title:"창귀",   content:"나그네 🧿 -1. 창귀 🧿 +1, 추가 창귀 카드 1장을 길손 덱에 추가.",                           back:"pass_back.png", illustration:"ghost.png" },
+
+    /* 날씨 카드 */
+    { title:"☀️ 맑음",  content:"길손 카드 모두 공개 후, 길손들이 섞어 나눠 갖는다.",                                                  back:"weather_back.png", illustration:"sunny_road.png" },
+    { title:"☀️ 맑음",  content:"나그네만 길손 카드 모두 확인 후, 길손들이 섞어 나눠 갖는다.",                                          back:"weather_back.png", illustration:"sunny_breeze.png" },
+    { title:"🌫️ 안개", content:"정해진 장수보다 1장 더 뽑는다. <br/>나그네만 그 중 1장 확인 후, 길손들이 나눠 갖는다.",               back:"weather_back.png", illustration:"foggy_mountain.png" },
+    { title:"🌧️ 폭우", content:"카드 공개 없음. 말 금지. <br/>행동(몸짓)으로만 유혹.",                                               back:"weather_back.png", illustration:"heavy_rain.png" },
+    { title:"🌑 어둠",  content:"각 길손이 카드 2장 뽑아 1장 선택. <br/>나그네는 눈 감고 길손 선택.",                                back:"weather_back.png", illustration:"deep_night.png" },
+    { title:"🌑 어둠",  content:"나그네 카드 3장 먼저 공개, 1장 비공개 선택. <br/>나그네는 눈 감고 길손 선택.",                      back:"weather_back.png", illustration:"deep_night.png" },
+];
+
+const CARDS_PER_PAGE = 5;
+const pagesContainer = document.getElementById('pagesContainer');
+
+function createPage() {
+    const page = document.createElement('div');
+    page.className = 'page';
+    pagesContainer.appendChild(page);
+    return page;
+}
+
+function renderCard(data) {
+    const hasAlignment = data.alignment !== undefined;
+    const badgeClass = data.alignment === '선' ? 'good'
+                     : data.alignment === '악' ? 'evil' : 'neutral';
+    const badge = hasAlignment
+        ? `<span class="alignment-badge ${badgeClass}">${data.alignment}</span>` : '';
+
+    const coin = data.coin || 0;
+    const soul = data.soul || 0;
+    const resourceBar = (coin > 0 || soul > 0)
+        ? `<div class="resource-bar"><span>${'🪙'.repeat(coin)}</span><span>${'🧿'.repeat(soul)}</span></div>`
+        : '';
+
+    return `
+        <div class="card"><div class="content-container">
+            <div class="card-back" style="background-image:url('./image/${data.back}');"></div>
+        </div></div>
+        <div class="card"><div class="content-container">
+            <div class="card-front">
+                <h2 class="card-title">${data.title}</h2>
+                <div class="illustration-box" style="background-image:url('./image/${data.illustration}')">
+                    ${badge}
+                </div>
+                <div class="description">${data.content}</div>
+                ${resourceBar}
+            </div>
+        </div></div>`;
+}
+
+let currentPage = null;
+allCards.forEach((data, index) => {
+    if (index % CARDS_PER_PAGE === 0) currentPage = createPage();
+    currentPage.innerHTML += renderCard(data);
+});
+</script>
+</body>
+</html>

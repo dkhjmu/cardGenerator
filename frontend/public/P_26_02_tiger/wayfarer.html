@@ -7,7 +7,6 @@
         @page {
             size: A4;
             margin: 0;
-            /* 크롬 머릿글/바닥글 제거 */
             margin-top: 0;
             margin-bottom: 0;
         }
@@ -20,101 +19,113 @@
                 border: none !important;
                 outline: none !important;
                 margin: 0 !important;
-                padding: 1mm;
-                width: 210mm;
-                height: 297mm;
+                padding: 2mm !important;
+                width: 210mm !important;
+                height: 297mm !important;
+                grid-gap: 0mm 1mm !important; /* 세로 gap 제거 */
                 page-break-after: always;
             }
             .page:last-child { page-break-after: avoid; }
+            /* 인쇄 시 카드 높이 축소: 5행 × 46mm + gap 0 = 230mm < 293mm */
+            .card {
+                height: 46mm !important;
+            }
+            .content-container {
+                width: 46mm !important;
+            }
         }
 
         .page {
-            width: 210mm; height: 297mm; padding: 5mm; margin: 5mm auto;
+            width: 210mm; height: 297mm; padding: 3mm; margin: 5mm auto;
             background: white; box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            display: grid; grid-template-columns: repeat(2, 83mm); /* 가로 2칸 (84mm 카드) */
-            grid-gap: 1mm 1mm; justify-content: center; align-content: start; box-sizing: border-box;
+            display: grid; grid-template-columns: repeat(2, 83mm);
+            grid-gap: 0.5mm 1mm; justify-content: center; align-content: start; box-sizing: border-box;
         }
 
-        /* 카드 기본 규격 (53mm x 84mm) → 가로로 눕힘 */
+        /* 카드: 83mm × 48mm */
         .card {
-            width: 83mm; height: 50mm;
+            width: 83mm; height: 48mm;
             border: 0.1mm solid #000; border-radius: 3mm;
-            overflow: clip; position: relative; box-sizing: border-box;
+            overflow: hidden; position: relative; box-sizing: border-box;
             background: white;
         }
 
-        /* 텍스트 90도 회전 */
+        /* 90도 회전 컨테이너 */
         .content-container {
-            width: 50mm; height: 83mm;
+            width: 48mm; height: 83mm;
             position: absolute;
             top: 50%; left: 50%;
             transform: translate(-50%, -50%) rotate(90deg);
             display: flex; flex-direction: column;
-            /* 패딩을 5mm -> 2mm로 줄임 */
             padding: 2mm; box-sizing: border-box;
+            overflow: hidden;
         }
 
-        /* 앞면 상세 디자인 */
+        /* 앞면 */
         .card-front {
             display: flex;
             flex-direction: column;
-            height: 100%; /* 부모 높이 전체 사용 */
-            padding: 0; /* 내부 패딩 제거 */
+            height: 100%;
+            overflow: hidden;
             text-align: center;
         }
 
         .job-title {
-            font-size: 1.4rem;
-            margin: 0 0 10px 0;
+            font-size: 1.2rem;
+            margin: 0 0 3px 0;
             font-weight: bold;
+            flex-shrink: 0;
         }
 
         .illustration-box {
             width: 100%;
-            flex-grow: 1; /* 남는 공간을 일러스트가 다 차지하도록 함 */
-            min-height: 100px; /* 최소 높이 보장 */
+            flex: 1 1 0;       /* 남은 공간만큼만 차지, 기준값 0 */
+            min-height: 0;     /* flex 자식 기본 min-height 제거 */
             background-color: #f0f0f0;
             background-size: cover;
-            position: relative; /* 성향 배지 배치를 위해 필요 */
+            background-position: center;
+            position: relative;
             border-radius: 3px;
         }
 
         .description {
-            font-size: 0.9rem;
+            font-size: 0.72rem;
             line-height: 1.2;
-            padding: 8px 0;
-            word-break: keep-all; /* 단어 단위 줄바꿈으로 깔끔하게 */
-            order: 3;
+            padding: 3px 0;
+            word-break: keep-all;
+            flex-shrink: 0;    /* 고정 크기 유지 */
         }
 
         .alignment-badge {
             position: absolute;
-            top: 5px;
-            right: 5px;
-            padding: 2px 8px;
+            top: 4px;
+            right: 4px;
+            padding: 1px 6px;
             border-radius: 4px;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: white;
         }
 
-        .alignment-badge.good { background-color: #3498db; } /* 선: 파란색 */
-        .alignment-badge.evil { background-color: #e74c3c; } /* 악: 빨간색 */
+        .alignment-badge.good { background-color: #3498db; }
+        .alignment-badge.evil { background-color: #e74c3c; }
+        .alignment-badge.neutral { background-color: #888; }
 
         .resource-bar {
-            font-size: 1.5rem; /* 아이콘 크기 키움 */
+            font-size: 1.1rem;
             display: flex;
-            justify-content: center; /* 중앙 정렬 */
-            gap: 10px; /* 아이콘 사이 간격 */
-            padding-bottom: 5px;
-            order: 4; /* 맨 아래 */
+            justify-content: center;
+            gap: 6px;
+            padding-bottom: 2px;
+            flex-shrink: 0;    /* 고정 크기 유지 */
         }
 
-        /* 뒷면 상세 디자인 */
+        /* 뒷면 */
         .card-back {
-            background: white;
             width: 100%; height: 100%;
             display: flex; align-items: center; justify-content: center;
-            transform: rotate(180deg); /* 글씨 반대 방향 */
+            transform: rotate(180deg);
+            background-size: cover;
+            background-position: center;
         }
 
         .logo-box {
@@ -133,94 +144,100 @@
 <div id="pagesContainer"></div>
 
 <script>
-    // 이 JSON 데이터를 수정하여 카드 내용을 바꾸세요
     const cardData = [
         {
             "title": "보부상",
-            "content": "하루 벌어 하루 먹고 사는 보부상입니다.",
-            "illustration": "merchant1.png",
+            "content": "위험 길손(창귀·호랑이·산적) 없이 통과",
             "alignment": "선",
             "coin": 1,
-            "soul": 1
+            "soul": 1,
+            "illustration": "merchant1.png"
         },
         {
             "title": "보부상",
-            "content": "하루 벌어 하루 먹고 사는 보부상입니다.",
-            "illustration": "merchant2.png",
+            "content": "위험 길손(창귀·호랑이·산적) 없이 통과",
             "alignment": "악",
             "coin": 1,
-            "soul": 1
+            "soul": 1,
+            "illustration": "merchant2.png"
         },
         {
             "title": "보부상",
-            "content": "하루 벌어 하루 먹고 사는 보부상입니다.",
-            "illustration": "merchant1.png",
+            "content": "위험 길손(창귀·호랑이·산적) 없이 통과",
             "alignment": "선",
             "coin": 2,
-            "soul": 0
+            "soul": 0,
+            "illustration": "merchant1.png"
         },
         {
             "title": "보부상",
-            "content": "하루 벌어 하루 먹고 사는 보부상입니다.",
-            "illustration": "merchant2.png",
+            "content": "위험 길손(창귀·호랑이·산적) 없이 통과",
             "alignment": "악",
             "coin": 2,
-            "soul": 0
+            "soul": 0,
+            "illustration": "merchant2.png"
         },
         {
             "title": "보부상",
-            "content": "하루 벌어 하루 먹고 사는 보부상입니다.",
-            "illustration": "merchant1.png",
+            "content": "위험 길손(창귀·호랑이·산적) 없이 통과",
             "alignment": "선",
             "coin": 3,
-            "soul": 0
+            "soul": 0,
+            "illustration": "merchant1.png"
         },
         {
             "title": "보부상",
-            "content": "하루 벌어 하루 먹고 사는 보부상입니다.",
-            "illustration": "merchant2.png",
+            "content": "위험 길손(창귀·호랑이·산적) 없이 통과",
             "alignment": "악",
             "coin": 3,
-            "soul": 0
+            "soul": 0,
+            "illustration": "merchant2.png"
         },
         {
             "title": "도사",
-            "content": "창귀를 잡으러 다닙니다. 호랑이에게는 먹이일 뿐",
-            "illustration": "shaman1.png",
+            "content": "창귀 길손 찾아내기 (호랑이·산적에게 무력)",
             "alignment": "선",
-            "coin": 4,
-            "soul": 0
+            "coin": 3,
+            "soul": 1,
+            "illustration": "shaman1.png"
         },
         {
             "title": "도사",
-            "content": "창귀를 잡으러 다닙니다. 호랑이에게는 먹이일 뿐",
-            "illustration": "shaman2.png",
+            "content": "창귀 길손 찾아내기 (호랑이·산적에게 무력)",
             "alignment": "악",
-            "coin": 4,
-            "soul": 0
+            "coin": 3,
+            "soul": 1,
+            "illustration": "shaman2.png"
         },
         {
-            "title": "사냥꾼",
-            "content": "호랑이를 잡으러 다닙니다. 창귀에게는 먹이일 뿐",
-            "illustration": "gunner.png",
+            "title": "착호갑사",
+            "content": "호랑이·산적 찾아내기 (창귀에게 무력)",
             "alignment": "선",
             "coin": 4,
-            "soul": 0
+            "soul": 1,
+            "illustration": "gunner.png"
         },
         {
-            "title": "사냥꾼",
-            "content": "호랑이를 잡으러 다닙니다. 창귀에게는 먹이일 뿐",
-            "illustration": "gunner2.png",
+            "title": "착호갑사",
+            "content": "호랑이·산적 찾아내기 (창귀에게 무력)",
             "alignment": "악",
             "coin": 4,
-            "soul": 0
+            "soul": 1,
+            "illustration": "gunner2.png"
         },
+        {
+            "title": "창귀(나그네)",
+            "content": "5인 이상 전용, 등짐꾼·밀수꾼 찾아내어 영혼 뺏기 (나머지에게 무력)",
+            "alignment": "-",
+            "coin": 0,
+            "soul": 1,
+            "illustration": "ghost.png"
+        }
     ];
 
-    const CARDS_PER_PAGE = 4; // 페이지당 카드 쌍 수 (인쇄 여백 고려)
+    const CARDS_PER_PAGE = 5;
     const pagesContainer = document.getElementById('pagesContainer');
 
-    // 페이지 생성 함수
     function createPage() {
         const page = document.createElement('div');
         page.className = 'page';
@@ -228,46 +245,45 @@
         return page;
     }
 
-    // 카드 HTML 생성 함수
     function createCardHtml(data) {
-        // 동전과 혼 아이콘 생성 (개수만큼 반복)
         const coinIcons = '🪙'.repeat(data.coin);
         const soulIcons = '🧿'.repeat(data.soul);
+
+        const badgeClass = data.alignment === '선' ? 'good'
+                         : data.alignment === '악' ? 'evil'
+                         : 'neutral';
+
+        // resource-bar: 아이콘이 하나도 없으면 빈 줄 없애기
+        const resourceBar = (data.coin > 0 || data.soul > 0)
+            ? `<div class="resource-bar">
+                <span class="coins">${coinIcons}</span>
+                <span class="souls">${soulIcons}</span>
+               </div>`
+            : '';
 
         return `
             <div class="card">
                 <div class="content-container">
-                    <div class="card-back" style="background-image: url('./image/way_back.png'); background-size: cover; background-position: center;">
-                    </div>
+                    <div class="card-back" style="background-image: url('./image/way_back.png');"></div>
                 </div>
             </div>
             <div class="card">
                 <div class="content-container">
                     <div class="card-front">
                         <h2 class="job-title">${data.title}</h2>
-                        
                         <div class="illustration-box" style="background-image: url('./image/${data.illustration}')">
-                            <span class="alignment-badge ${data.alignment === '선' ? 'good' : 'evil'}">
-                                ${data.alignment}
-                            </span>
+                            <span class="alignment-badge ${badgeClass}">${data.alignment}</span>
                         </div>
-
                         <div class="description">${data.content}</div>
-                        
-                        <div class="resource-bar">
-                            <span class="coins">${coinIcons}</span>
-                            <span class="souls">${soulIcons}</span>
-                        </div>
+                        ${resourceBar}
                     </div>
                 </div>
             </div>
         `;
     }
 
-    // 카드 배치
     let currentPage = null;
     cardData.forEach((data, index) => {
-        // 5개마다 새 페이지 생성
         if (index % CARDS_PER_PAGE === 0) {
             currentPage = createPage();
         }

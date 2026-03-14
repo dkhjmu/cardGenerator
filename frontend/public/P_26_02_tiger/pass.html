@@ -80,10 +80,12 @@
         }
 
         .description {
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             line-height: 1.2;
+            flex-shrink: 0;
             padding: 8px 0;
-            word-break: keep-all; /* 단어 단위 줄바꿈으로 깔끔하게 */
+            word-break: keep-all; 
+            white-space: normal;
             order: 3;
         }
 
@@ -134,59 +136,69 @@
 
 <script>
     // 이 JSON 데이터를 수정하여 카드 내용을 바꾸세요
-    const cardData = [
-        {
-            "title": "등짐꾼",
-            "content": "온 나그네가 보부상이라면 🪙를 3개 받습니다.",
-            "illustration": "suppoter.png"
-        },
-        {
-            "title": "스님",
-            "content": "온 나그네가 보부상이라면, 나그네의 🧿를 공급처에서 1개 늘리고 🪙를 2개 받습니다.",
-            "illustration": "monk.png"
-        }, 
-        {
-            "title": "호랑이",
-            "content": "나그네의 🧿를 1개 빼앗고 공급처에서 🧿를 1개 얻습니다.",
-            "illustration": "tiger.png"
-        },
-        {
-            "title": "산적",
-            "content": "나그네의 🪙를 4개 빼았습니다.",
-            "illustration": "theif.png"
-        },
-        {
-            "title": "창귀",
-            "content": "나그네의 🧿를 1개 빼앗습니다. 창귀카드를 1장 덱에 추가합니다.",
-            "illustration": "ghost.png"
-        }, 
-        {
-            "title": "창귀",
-            "content": "나그네의 🧿를 1개 빼앗습니다. 창귀카드를 1장 덱에 추가합니다.",
-            "illustration": "ghost.png"
-        }, 
-        {
-            "title": "창귀",
-            "content": "나그네의 🧿를 1개 빼앗습니다. 창귀카드를 1장 덱에 추가합니다.",
-            "illustration": "ghost.png"
-        }, 
-        {
-            "title": "창귀",
-            "content": "나그네의 🧿를 1개 빼앗습니다. 창귀카드를 1장 덱에 추가합니다.",
-            "illustration": "ghost.png"
-        }, 
-        {
-            "title": "도깨비",
-            "content": "나그네(선): 나그네 플레이어가 가진 🪙을 2배로 만듭니다. 도깨비는 🧿를 1개 얻습니다. <br/> 나그네(악): 나그네의 🧿을 1개 도깨비가 빼앗습니다.",
-            "illustration": "dokebi.png"
-        },
-        {
-            "title": "밀수꾼",
-            "content": "나그네가 오지 않았다면 🪙를 3개 받습니다. 나그네가 왔다면 자신의 🪙를 1개 나그네에게 줍니다.",
-            "illustration": "smuggler.png"
-        },
-         
-    ];
+    const cardData = 
+        [
+            {
+                "title": "등짐꾼",
+                "content": "나그네가 보부상이라면, 나그네·등짐꾼 모두 🪙 +2. <br/> 선택 안 됐을 때: 등짐꾼 🪙 +1",
+                "illustration": "supporter.png"
+            },
+            {
+                "title": "스님",
+                "content": "나그네 🧿 +1 (공급처에서), 스님 🪙 +2. 나그네가 창귀(나그네)라면 스님 🧿 +1 추가.",
+                "illustration": "monk.png"
+            },
+            {
+                "title": "밀수꾼",
+                "content": "밀수꾼 🪙 -1, 나그네 🪙 +1. <br/> 선택 안 됐을 때: 밀수꾼 🪙 +3 (공급처에서).",
+                "illustration": "smuggler.png"
+            },
+            {
+                "title": "산적떼",
+                "content": "나그네 🪙 -4, 산적떼 🪙 +4 (부족하면 가진 만큼 전부). <br/> 선택 안 됐을 때: 산적떼 🪙 -1",
+                "illustration": "thief.png"
+            },
+            {
+                "title": "산적들",
+                "content": "나그네 🪙 -2, 산적들 🪙 +2 (부족하면 가진 만큼 전부).",
+                "illustration": "thief.png"
+            },
+            {
+                "title": "호랑이",
+                "content": "나그네 🧿 -1, 호랑이 🧿 +2 (공급처에서). 추가 창귀 카드 1장을 길손 덱에 추가.",
+                "illustration": "tiger.png"
+            },
+            {
+                "title": "여우",
+                "content": "나그네(선): 여우 🧿 -1, 나그네 🧿 +1. / 나그네(악): 나그네 🧿 -2, 여우 🧿 +2.",
+                "illustration": "fox.png"
+            },
+            {
+                "title": "도깨비",
+                "content": "나그네(선): 나그네 🪙 +3 (공급처에서), 도깨비 🧿 +1. / 나그네(악): 나그네 🧿 -1, 도깨비 🧿 +1.",
+                "illustration": "dokebi.png"
+            },
+            {
+                "title": "창귀",
+                "content": "나그네 🧿 -1. 창귀 🧿 +1 추가 창귀 카드 1장을 길손 덱에 추가.",
+                "illustration": "ghost.png"
+            },
+            {
+                "title": "창귀",
+                "content": "나그네 🧿 -1. 창귀 🧿 +1 추가 창귀 카드 1장을 길손 덱에 추가.",
+                "illustration": "ghost.png"
+            },
+            {
+                "title": "창귀",
+                "content": "나그네 🧿 -1. 창귀 🧿 +1 추가 창귀 카드 1장을 길손 덱에 추가.",
+                "illustration": "ghost.png"
+            },
+            {
+                "title": "창귀",
+                "content": "나그네 🧿 -1. 창귀 🧿 +1 추가 창귀 카드 1장을 길손 덱에 추가.",
+                "illustration": "ghost.png"
+            },
+        ];
 
     const CARDS_PER_PAGE = 4; // 페이지당 카드 쌍 수 (인쇄 여백 고려)
     const pagesContainer = document.getElementById('pagesContainer');
