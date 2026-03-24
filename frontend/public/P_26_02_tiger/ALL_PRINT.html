@@ -4,66 +4,76 @@
     <meta charset="UTF-8">
     <title>나그네 - 전체 카드</title>
     <style>
-        @page { size: A4; margin: 0; }
+        /* A4 용지 가로(Landscape) */
+        @page { size: A4 landscape; margin: 0; }
 
-        body { margin: 0; padding: 0; background-color: #f0f0f0; font-family: 'Pretendard', sans-serif; }
+        body { 
+            margin: 0; padding: 0; 
+            background-color: #555; 
+            font-family: 'Pretendard', sans-serif; 
+            -webkit-print-color-adjust: exact; 
+            print-color-adjust: exact; 
+        }
+
+        /* A4 가로 도화지 설정 */
+        .page {
+            width: 297mm;
+            height: 210mm;
+            background: white;
+            box-sizing: border-box;
+            page-break-after: always;
+            position: relative;
+            overflow: hidden; 
+            
+            /* 정중앙 배치 수학 계산 (간격 2mm 기준)
+               - 그리드 너비: (52*4) + (2*3) = 214mm -> 좌우 여백: (297-214)/2 = 41.5mm
+               - 그리드 높이: (88*2) + 2 = 178mm -> 상하 여백: (210-178)/2 = 16mm 
+            */
+            padding-top: 16mm;
+            padding-left: 41.5mm;
+        }
+
+        @media screen {
+            .page { margin: 10mm auto; box-shadow: 0 0 10px rgba(0,0,0,0.5); }
+        }
 
         @media print {
-            body { background: none; }
-            .page {
-                box-shadow: none !important;
-                margin: 0 !important;
-                padding: 2mm !important;
-                width: 210mm !important;
-                height: 297mm !important;
-                grid-gap: 0mm 1mm !important;
-                page-break-after: always;
-            }
-            .page:last-child { page-break-after: avoid; }
-            .card              { height: 46mm !important; }
-            .content-container { width: 46mm !important; }
+            body { background: white; }
+            .page { margin: 0 !important; box-shadow: none !important; }
         }
 
-        .page {
-            width: 210mm; height: 297mm;
-            padding: 3mm; margin: 5mm auto;
-            background: white;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        /* 위아래 짝꿍 맞추기 & 간격 2mm로 수정 */
+        .card-grid {
             display: grid;
-            grid-template-columns: repeat(2, 83mm);
-            grid-gap: 0.5mm 1mm;
-            justify-content: center;
-            align-content: start;
-            box-sizing: border-box;
+            grid-template-columns: repeat(4, 52mm); 
+            grid-template-rows: repeat(2, 88mm);    
+            grid-auto-flow: column; /* '위 -> 아래'로 채움 */
+            gap: 2mm; /* 3mm -> 2mm로 변경 */
         }
 
+        /* 카드 기본 규격 */
         .card {
-            width: 83mm; height: 48mm;
+            width: 52mm;
+            height: 88mm;
             border: 0.1mm solid #000;
             border-radius: 3mm;
-            overflow: hidden;
-            position: relative;
             box-sizing: border-box;
             background: white;
-        }
-
-        .content-container {
-            width: 48mm; height: 83mm;
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%) rotate(90deg);
-            display: flex; flex-direction: column;
-            padding: 2mm; box-sizing: border-box;
+            position: relative;
+            padding: 2mm;
+            display: flex;
+            flex-direction: column;
             overflow: hidden;
         }
 
+        /* --- 내부 디자인 --- */
         .card-front {
             display: flex; flex-direction: column;
             height: 100%; overflow: hidden; text-align: center;
         }
 
         .card-title {
-            font-size: 1.2rem; margin: 0 0 3px 0;
+            font-size: 1.25rem; margin: 0 0 3px 0;
             font-weight: bold; flex-shrink: 0;
         }
 
@@ -75,14 +85,15 @@
         }
 
         .description {
-            font-size: 0.70rem; line-height: 1.25;
+            font-size: 0.75rem; line-height: 1.3;
             padding: 3px 0; word-break: keep-all; flex-shrink: 0;
         }
 
         .alignment-badge {
             position: absolute; top: 4px; right: 4px;
-            padding: 1px 6px; border-radius: 4px;
+            padding: 2px 6px; border-radius: 4px;
             font-size: 0.75rem; color: white;
+            font-weight: bold;
         }
         .alignment-badge.good    { background-color: #3498db; }
         .alignment-badge.evil    { background-color: #e74c3c; }
@@ -94,38 +105,35 @@
             padding-bottom: 2px; flex-shrink: 0;
         }
 
+        /* 접었을 때 똑바로 보이도록 뒷면 180도 회전 */
         .card-back {
             width: 100%; height: 100%;
-            transform: rotate(180deg);
             background-size: cover; background-position: center;
+            transform: rotate(180deg);
         }
     </style>
 </head>
 <body>
 <div id="pagesContainer"></div>
 <script>
-/* ── 전체 카드 데이터 (순서대로 출력됨) ── */
+/* ── 전체 카드 데이터 ── */
 const allCards = [
-
-    /* 나그네 카드 */
-    { title:"보부상",       content:"위험 길손(창귀·호랑이·산적) 없이 통과",                                         back:"way_back.png", illustration:"merchant1.png", alignment:"선", coin:1, soul:1 },
-    { title:"보부상",       content:"위험 길손(창귀·호랑이·산적) 없이 통과",                                         back:"way_back.png", illustration:"merchant2.png", alignment:"악", coin:1, soul:1 },
-    { title:"보부상",       content:"위험 길손(창귀·호랑이·산적) 없이 통과",                                         back:"way_back.png", illustration:"merchant1.png", alignment:"선", coin:2, soul:0 },
-    { title:"보부상",       content:"위험 길손(창귀·호랑이·산적) 없이 통과",                                         back:"way_back.png", illustration:"merchant2.png", alignment:"악", coin:2, soul:0 },
-    { title:"보부상",       content:"위험 길손(창귀·호랑이·산적) 없이 통과",                                         back:"way_back.png", illustration:"merchant1.png", alignment:"선", coin:3, soul:0 },
-    { title:"보부상",       content:"위험 길손(창귀·호랑이·산적) 없이 통과",                                         back:"way_back.png", illustration:"merchant2.png", alignment:"악", coin:3, soul:0 },
+    { title:"보부상",       content:"위험 길손(창귀·호랑이·산적) 없이 통과",                                        back:"way_back.png", illustration:"merchant1.png", alignment:"선", coin:1, soul:1 },
+    { title:"보부상",       content:"위험 길손(창귀·호랑이·산적) 없이 통과",                                        back:"way_back.png", illustration:"merchant2.png", alignment:"악", coin:1, soul:1 },
+    { title:"보부상",       content:"위험 길손(창귀·호랑이·산적) 없이 통과",                                        back:"way_back.png", illustration:"merchant1.png", alignment:"선", coin:2, soul:0 },
+    { title:"보부상",       content:"위험 길손(창귀·호랑이·산적) 없이 통과",                                        back:"way_back.png", illustration:"merchant2.png", alignment:"악", coin:2, soul:0 },
+    { title:"보부상",       content:"위험 길손(창귀·호랑이·산적) 없이 통과",                                        back:"way_back.png", illustration:"merchant1.png", alignment:"선", coin:3, soul:0 },
+    { title:"보부상",       content:"위험 길손(창귀·호랑이·산적) 없이 통과",                                        back:"way_back.png", illustration:"merchant2.png", alignment:"악", coin:3, soul:0 },
     { title:"도사",         content:"창귀 길손 찾아내기 (호랑이·산적에게 무력)",                                     back:"way_back.png", illustration:"shaman1.png",  alignment:"선", coin:3, soul:1 },
     { title:"도사",         content:"창귀 길손 찾아내기 (호랑이·산적에게 무력)",                                     back:"way_back.png", illustration:"shaman2.png",  alignment:"악", coin:3, soul:1 },
     { title:"착호갑사",     content:"호랑이·산적 찾아내기 (창귀에게 무력)",                                          back:"way_back.png", illustration:"gunner.png",   alignment:"선", coin:4, soul:1 },
     { title:"착호갑사",     content:"호랑이·산적 찾아내기 (창귀에게 무력)",                                          back:"way_back.png", illustration:"gunner2.png",  alignment:"악", coin:4, soul:1 },
     { title:"창귀(나그네)", content:"5인 이상 전용, 등짐꾼·밀수꾼 찾아내어 영혼 뺏기 (나머지에게 무력)",            back:"way_back.png", illustration:"ghost.png",    alignment:"-",  coin:0, soul:1 },
-
-    /* 길 카드 */
     { title:"등짐꾼", content:"나그네가 보부상이라면, 나그네·등짐꾼 모두 🪙 +2. <br/>선택 안 됐을 때: 등짐꾼 🪙 +1",        back:"pass_back.png", illustration:"supporter.png" },
     { title:"스님",   content:"나그네 🧿 +1 (공급처에서), 스님 🪙 +2. 나그네가 창귀(나그네)라면 스님 🧿 +1 추가.",        back:"pass_back.png", illustration:"monk.png" },
     { title:"밀수꾼", content:"밀수꾼 🪙 -1, 나그네 🪙 +1. <br/>선택 안 됐을 때: 밀수꾼 🪙 +3 (공급처에서).",             back:"pass_back.png", illustration:"smuggler.png" },
     { title:"산적떼", content:"나그네 🪙 -4, 산적떼 🪙 +4 (부족하면 가진 만큼 전부). <br/>선택 안 됐을 때: 산적떼 🪙 -1", back:"pass_back.png", illustration:"thief.png" },
-    { title:"산적들", content:"나그네 🪙 -2, 산적들 🪙 +2 (부족하면 가진 만큼 전부).",                                     back:"pass_back.png", illustration:"thief.png" },
+    { title:"산적들", content:"나그네 🪙 -2, 산적들 🪙 +2 (부족하면 가진 만큼 전부).",                                      back:"pass_back.png", illustration:"thief.png" },
     { title:"호랑이", content:"나그네 🧿 -1, 호랑이 🧿 +2 (공급처에서). 추가 창귀 카드 1장을 길손 덱에 추가.",            back:"pass_back.png", illustration:"tiger.png" },
     { title:"여우",   content:"나그네(선): 여우 🧿 -1, 나그네 🧿 +1. / 나그네(악): 나그네 🧿 -2, 여우 🧿 +2.",           back:"pass_back.png", illustration:"fox.png" },
     { title:"도깨비", content:"나그네(선): 나그네 🪙 +3 (공급처에서), 도깨비 🧿 +1. / 나그네(악): 나그네 🧿 -1, 도깨비 🧿 +1.", back:"pass_back.png", illustration:"dokebi.png" },
@@ -133,24 +141,27 @@ const allCards = [
     { title:"창귀",   content:"나그네 🧿 -1. 창귀 🧿 +1, 추가 창귀 카드 1장을 길손 덱에 추가.",                           back:"pass_back.png", illustration:"ghost.png" },
     { title:"창귀",   content:"나그네 🧿 -1. 창귀 🧿 +1, 추가 창귀 카드 1장을 길손 덱에 추가.",                           back:"pass_back.png", illustration:"ghost.png" },
     { title:"창귀",   content:"나그네 🧿 -1. 창귀 🧿 +1, 추가 창귀 카드 1장을 길손 덱에 추가.",                           back:"pass_back.png", illustration:"ghost.png" },
-
-    /* 날씨 카드 */
-    { title:"☀️ 맑음",  content:"길손 카드 모두 공개 후, 길손들이 섞어 나눠 갖는다.",                                                  back:"weather_back.png", illustration:"sunny_road.png" },
-    { title:"☀️ 맑음",  content:"나그네만 길손 카드 모두 확인 후, 길손들이 섞어 나눠 갖는다.",                                          back:"weather_back.png", illustration:"sunny_breeze.png" },
+    { title:"☀️ 맑음",  content:"길손 카드 모두 공개 후, 길손들이 섞어 나눠 갖는다.",                                       back:"weather_back.png", illustration:"sunny_road.png" },
+    { title:"☀️ 맑음",  content:"나그네만 길손 카드 모두 확인 후, 길손들이 섞어 나눠 갖는다.",                                  back:"weather_back.png", illustration:"sunny_breeze.png" },
     { title:"🌫️ 안개", content:"정해진 장수보다 1장 더 뽑는다. <br/>나그네만 그 중 1장 확인 후, 길손들이 나눠 갖는다.",               back:"weather_back.png", illustration:"foggy_mountain.png" },
-    { title:"🌧️ 폭우", content:"카드 공개 없음. 말 금지. <br/>행동(몸짓)으로만 유혹.",                                               back:"weather_back.png", illustration:"heavy_rain.png" },
+    { title:"🌧️ 폭우", content:"카드 공개 없음. 말 금지. <br/>행동(몸짓)으로만 유혹.",                                              back:"weather_back.png", illustration:"heavy_rain.png" },
     { title:"🌑 어둠",  content:"각 길손이 카드 2장 뽑아 1장 선택. <br/>나그네는 눈 감고 길손 선택.",                                back:"weather_back.png", illustration:"deep_night.png" },
     { title:"🌑 어둠",  content:"나그네 카드 3장 먼저 공개, 1장 비공개 선택. <br/>나그네는 눈 감고 길손 선택.",                      back:"weather_back.png", illustration:"deep_night.png" },
 ];
 
-const CARDS_PER_PAGE = 5;
+const CARDS_PER_PAGE = 4; // 1페이지당 4쌍(8장)
 const pagesContainer = document.getElementById('pagesContainer');
 
-function createPage() {
+function createPageGrid() {
     const page = document.createElement('div');
     page.className = 'page';
+    
+    const grid = document.createElement('div');
+    grid.className = 'card-grid';
+    
+    page.appendChild(grid);
     pagesContainer.appendChild(page);
-    return page;
+    return grid; 
 }
 
 function renderCard(data) {
@@ -166,11 +177,9 @@ function renderCard(data) {
         ? `<div class="resource-bar"><span>${'🪙'.repeat(coin)}</span><span>${'🧿'.repeat(soul)}</span></div>`
         : '';
 
+    // 앞면 출력 후 뒷면 출력
     return `
-        <div class="card"><div class="content-container">
-            <div class="card-back" style="background-image:url('./image/${data.back}');"></div>
-        </div></div>
-        <div class="card"><div class="content-container">
+        <div class="card">
             <div class="card-front">
                 <h2 class="card-title">${data.title}</h2>
                 <div class="illustration-box" style="background-image:url('./image/${data.illustration}')">
@@ -179,13 +188,18 @@ function renderCard(data) {
                 <div class="description">${data.content}</div>
                 ${resourceBar}
             </div>
-        </div></div>`;
+        </div>
+        <div class="card" style="padding: 0;">
+            <div class="card-back" style="background-image:url('./image/${data.back}');"></div>
+        </div>`;
 }
 
-let currentPage = null;
+let currentGrid = null;
 allCards.forEach((data, index) => {
-    if (index % CARDS_PER_PAGE === 0) currentPage = createPage();
-    currentPage.innerHTML += renderCard(data);
+    if (index % CARDS_PER_PAGE === 0) {
+        currentGrid = createPageGrid();
+    }
+    currentGrid.innerHTML += renderCard(data);
 });
 </script>
 </body>
