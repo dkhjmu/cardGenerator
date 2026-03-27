@@ -18,8 +18,8 @@
       ],
       "CustomDeck": {
         "1": {
-          "FaceURL": "여기에_앞면_스프라이트시트_이미지주소_입력.png",
-          "BackURL": "여기에_뒷면_스프라이트시트_이미지주소_입력.png",
+          "FaceURL": "https://dkhjmu.github.io/cardGenerator/frontend/public/P_26_02_tiger/image/tiger_ghost_front.png",
+          "BackURL": "https://dkhjmu.github.io/cardGenerator/frontend/public/P_26_02_tiger/image/tiger_ghost_back.png",
           "NumWidth": 10,
           "NumHeight": 4,
           "BackIsHidden": true,
