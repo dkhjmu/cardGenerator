@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>나그네 - TTS 스프라이트 시트 메이커</title>
+    <style>
+        /* 기본 여백 제거 (캡처 시 방해 안 되게) */
+        body { 
+            margin: 0; padding: 0; 
+            background-color: #333; 
+            font-family: 'Pretendard', sans-serif; 
+        }
+
+        /* 컨트롤 패널 (버튼 영역) */
+        .controls {
+            padding: 15px; background: #222; color: white;
+            text-align: center; font-size: 16px;
+            position: fixed; top: 0; left: 0; width: 100%; z-index: 100;
+        }
+        button {
+            padding: 10px 20px; margin: 0 10px; font-size: 16px;
+            cursor: pointer; background-color: #3498db; color: white;
+            border: none; border-radius: 5px; font-weight: bold;
+        }
+        button:hover { background-color: #2980b9; }
+
+        /* TTS 스프라이트 시트 규격 (10 x 4) */
+        /* 여백이나 gap이 1px이라도 있으면 TTS에서 카드가 어긋나게 잘립니다! */
+        .sheet {
+            display: grid;
+            grid-template-columns: repeat(10, 300px); /* 카드 가로 300px */
+            grid-template-rows: repeat(4, 420px);    /* 카드 세로 420px */
+            width: 3000px;
+            height: 1680px;
+            margin-top: 70px; /* 버튼 영역 확보 */
+            background-color: #000; /* 빈 공간은 검은색 처리 */
+        }
+
+        /* 개별 카드 */
+        .card {
+            width: 300px; height: 420px;
+            box-sizing: border-box;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid #222; /* 자르는 선 기준점 역할 (내부 테두리) */
+        }
+
+        /* --- 앞면 디자인 --- */
+        .card-front {
+            width: 100%; height: 100%;
+            background: white;
+            padding: 15px; box-sizing: border-box;
+            display: flex; flex-direction: column; text-align: center;
+        }
+        .card-title { font-size: 24px; margin: 0 0 10px 0; font-weight: bold; }
+        .illustration-box {
+            flex: 1; background-color: #f4f4f9; border: 2px dashed #b0bec5;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 8px; color: #b0bec5; font-size: 20px; font-weight: bold;
+            position: relative; margin-bottom: 10px;
+        }
+        .alignment-badge {
+            position: absolute; top: 10px; right: 10px;
+            padding: 4px 10px; border-radius: 6px; font-size: 14px; color: white; font-weight: bold;
+        }
+        .alignment-badge.good    { background-color: #3498db; }
+        .alignment-badge.evil    { background-color: #e74c3c; }
+        .alignment-badge.neutral { background-color: #888; }
+        .description { font-size: 15px; line-height: 1.4; word-break: keep-all; flex-shrink: 0; min-height: 60px; }
+        .resource-bar { font-size: 22px; display: flex; justify-content: center; gap: 10px; padding-top: 10px; }
+
+        /* --- 뒷면 디자인 --- */
+        .card-back {
+            width: 100%; height: 100%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 30px; font-weight: bold; color: white; letter-spacing: 5px;
+            box-sizing: border-box;
+            /* 뒷면은 180도 뒤집지 않습니다. (TTS가 알아서 앞뒤를 맞춰줌) */
+        }
+        .bg-traveler { background-color: #2c3e50; border: 15px solid #1a252f; }
+        .bg-passerby { background-color: #5d4037; border: 15px solid #3e2723; }
+        .bg-weather  { background-color: #455a64; border: 15px solid #263238; }
+
+        /* 빈 카드 (채우기용) */
+        .card-empty { background-color: #000; width: 100%; height: 100%; }
+
+    </style>
+</head>
+<body>
+
+<div class="controls">
+    TTS 덱 추출기 (총 31장 / 40칸 포맷)
+    <button onclick="renderSheet('front')">앞면 보기</button>
+    <button onclick="renderSheet('back')">뒷면 보기</button>
+</div>
+
+<div class="sheet" id="sheet"></div>
+
+<script>
+const allCards = [
+    { type: "나그네", title: "보부상", content: "위험 길손(창귀·호랑이·산적) 없이 통과", alignment: "선", coin: 1, soul: 1 },
+    { type: "나그네", title: "보부상", content: "위험 길손(창귀·호랑이·산적) 없이 통과", alignment: "악", coin: 1, soul: 1 },
+    { type: "나그네", title: "보부상", content: "위험 길손(창귀·호랑이·산적) 없이 통과", alignment: "선", coin: 2, soul: 0 },
+    { type: "나그네", title: "보부상", content: "위험 길손(창귀·호랑이·산적) 없이 통과", alignment: "악", coin: 2, soul: 0 },
+    { type: "나그네", title: "보부상", content: "위험 길손(창귀·호랑이·산적) 없이 통과", alignment: "선", coin: 3, soul: 0 },
+    { type: "나그네", title: "보부상", content: "위험 길손(창귀·호랑이·산적) 없이 통과", alignment: "악", coin: 3, soul: 0 },
+    { type: "나그네", title: "도사", content: "창귀를 선택하면 퇴치 성공 / 호랑이·산적은 제압 불가", alignment: "선", coin: 3, soul: 1 },
+    { type: "나그네", title: "도사", content: "창귀를 선택하면 퇴치 성공 / 호랑이·산적은 제압 불가", alignment: "악", coin: 3, soul: 1 },
+    { type: "나그네", title: "착호갑사", content: "호랑이·산적을 선택하면 퇴치 성공 / 창귀는 제압 불가", alignment: "선", coin: 4, soul: 1 },
+    { type: "나그네", title: "착호갑사", content: "호랑이·산적을 선택하면 퇴치 성공 / 창귀는 제압 불가", alignment: "악", coin: 4, soul: 1 },
+    { type: "나그네", title: "창귀(나그네)", content: "등짐꾼·밀수꾼 선택 시 영혼 1개 탈취 / 동행 나그네가 도사가 아니라면 그 나그네 영혼도 1개 탈취 / 나머지에게 무력", alignment: "-", coin: 0, soul: 1 },
+
+    { type: "길손", title: "등짐꾼", content: "나그네가 보부상이라면, 나그네·등짐꾼 모두 🪙 +2. <br/>선택 안 됐을 때: 등짐꾼 🪙 +1" },
+    { type: "길손", title: "스님", content: "나그네 🧿 +1, 스님 🪙 +2 / 나그네가 창귀(나그네)라면 스님 🧿 +1 추가" },
+    { type: "길손", title: "밀수꾼", content: "나그네 🪙 +1, 밀수꾼 🪙 -1 <br/>선택 안 됐을 때: 밀수꾼 🪙 +3" },
+    { type: "길손", title: "산적떼", content: "나그네 🪙 -4, 산적떼 🪙 +4 (나그네 엽전 탈취 부족하면 가진 만큼 전부). <br/>선택 안 됐을 때: 산적떼 🪙 -1" },
+    { type: "길손", title: "산적들", content: "나그네 🪙 -2, 산적들 🪙 +2 (나그네 엽전 탈취 부족하면 가진 만큼 전부)." },
+    { type: "길손", title: "호랑이", content: "나그네 🧿 -1, 호랑이 🧿 +2 / 추가 창귀 카드 1장을 길손 덱에 추가" },
+    { type: "길손", title: "여우", content: "나그네(선): 여우 🧿 -1, 나그네 🧿 +1 / 나그네(악): 나그네 🧿 -2, 여우 🧿 +2 / 선택 안 됐을 때: 여우 🧿 +1" },
+    { type: "길손", title: "도깨비", content: "나그네(선): 나그네 🪙 +3, 도깨비 🧿 +1. / 나그네(악): 나그네 🧿 -1, 도깨비 🧿 +1." },
+    { type: "길손", title: "창귀", content: "나그네 🧿 -1. 창귀 🧿 +1, 추가 창귀 카드 1장을 길손 덱에 추가." },
+    { type: "길손", title: "창귀", content: "나그네 🧿 -1. 창귀 🧿 +1, 추가 창귀 카드 1장을 길손 덱에 추가." },
+    { type: "길손", title: "창귀", content: "나그네 🧿 -1. 창귀 🧿 +1, 추가 창귀 카드 1장을 길손 덱에 추가." },
+    { type: "길손", title: "창귀", content: "나그네 🧿 -1. 창귀 🧿 +1, 추가 창귀 화드 1장을 길손 덱에 추가." },
+
+    { type: "날씨", title: "☀️ 맑음", content: "길손 카드 모두 공개 후, 길손들이 섞어 나눠 갖는다." },
+    { type: "날씨", title: "☀️ 맑음", content: "길손 카드 2장 공개 후, 길손들이 섞어 나눠 갖는다." },
+    { type: "날씨", title: "🌫️ 안개", content: "길손 카드 1장 추가. <br/>나그네만 그 중 1장 확인 후, 길손들이 섞어 나눠 갖는다." },
+    { type: "날씨", title: "🌫️ 안개", content: "길손 카드 1장 추가. <br/>나그네는 길손마다 1번씩만 질문할 수 있고, 길손은 예/아니오로만 대답한다." },
+    { type: "날씨", title: "🌧️ 폭우", content: "카드 공개 없음. 길손은 말 금지. <br/>행동(몸짓)으로만 유혹." },
+    { type: "날씨", title: "🌧️ 폭우", content: "길손카드 1장 공개 후, 길손들이 섞어 나눠 갖는다. 길손은 말 금지. <br/>행동(몸짓)으로만 유혹." },
+    { type: "날씨", title: "🌑 어둠", content: "각 길손이 카드 2장 뽑아 1장 선택. <br/>길손은 한 단어로만 말할 수 있다." },
+    { type: "날씨", title: "🌑 어둠", content: "나그네 카드 3장 먼저 공개, 1장 비공개 선택. <br/>나그네는 말 금지, 길손만 말할 수 있다." }
+];
+
+const sheet = document.getElementById('sheet');
+const TOTAL_SLOTS = 40; // TTS 10x4 규격
+
+function renderSheet(viewType) {
+    sheet.innerHTML = ''; 
+    for (let i = 0; i < TOTAL_SLOTS; i++) {
+        const cardDiv = document.createElement('div');
+        cardDiv.className = 'card';
+
+        if (i < allCards.length) {
+            const data = allCards[i];
+            
+            if (viewType === 'front') {
+                const hasAlignment = data.alignment !== undefined;
+                const badgeClass = data.alignment === '선' ? 'good' : data.alignment === '악' ? 'evil' : 'neutral';
+                const badge = hasAlignment ? `<span class="alignment-badge ${badgeClass}">${data.alignment}</span>` : '';
+                const coin = data.coin || 0;
+                const soul = data.soul || 0;
+                const resourceBar = (coin > 0 || soul > 0) ? `<div class="resource-bar"><span>${'🪙'.repeat(coin)}</span><span>${'🧿'.repeat(soul)}</span></div>` : '';
+
+                cardDiv.innerHTML = `
+                    <div class="card-front">
+                        <h2 class="card-title">${data.title}</h2>
+                        <div class="illustration-box">
+                            ${badge}
+                            <span>${data.type}</span>
+                        </div>
+                        <div class="description">${data.content}</div>
+                        ${resourceBar}
+                    </div>`;
+            } else {
+                let backColorClass = '';
+                if (data.type === '나그네') backColorClass = 'bg-traveler';
+                else if (data.type === '길손') backColorClass = 'bg-passerby';
+                else if (data.type === '날씨') backColorClass = 'bg-weather';
+
+                cardDiv.innerHTML = `
+                    <div class="card-back ${backColorClass}">
+                        ${data.type}
+                    </div>`;
+            }
+        } else {
+            // 남는 9칸은 빈 검은색 카드로 처리
+            cardDiv.innerHTML = `<div class="card-empty"></div>`;
+        }
+        sheet.appendChild(cardDiv);
+    }
+}
+
+// 처음 열면 앞면 렌더링
+renderSheet('front');
+</script>
+</body>
+</html>

@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>나그네 - 전체 카드 (이미지 제거 버전)</title>
+    <style>
+        /* A4 용지 가로(Landscape) */
+        @page { size: A4 landscape; margin: 0; }
+
+        body { 
+            margin: 0; padding: 0; 
+            background-color: #555; 
+            font-family: 'Pretendard', sans-serif; 
+            -webkit-print-color-adjust: exact; 
+            print-color-adjust: exact; 
+        }
+
+        /* A4 가로 도화지 설정 */
+        .page {
+            width: 297mm;
+            height: 210mm;
+            background: white;
+            box-sizing: border-box;
+            page-break-after: always;
+            position: relative;
+            overflow: hidden; 
+            
+            /* 정중앙 배치 수학 계산 (간격 2mm 기준) */
+            padding-top: 16mm;
+            padding-left: 41.5mm;
+        }
+
+        @media screen {
+            .page { margin: 10mm auto; box-shadow: 0 0 10px rgba(0,0,0,0.5); }
+        }
+
+        @media print {
+            body { background: white; }
+            .page { margin: 0 !important; box-shadow: none !important; }
+        }
+
+        /* 위아래 짝꿍 맞추기 & 간격 2mm */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 52mm); 
+            grid-template-rows: repeat(2, 88mm);    
+            grid-auto-flow: column; /* '위 -> 아래'로 채움 */
+            gap: 2mm; 
+        }
+
+        /* 카드 기본 규격 */
+        .card {
+            width: 52mm;
+            height: 88mm;
+            border: 0.1mm solid #000;
+            border-radius: 3mm;
+            box-sizing: border-box;
+            background: white;
+            position: relative;
+            padding: 2mm;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* --- 앞면 디자인 --- */
+        .card-front {
+            display: flex; flex-direction: column;
+            height: 100%; overflow: hidden; text-align: center;
+        }
+
+        .card-title {
+            font-size: 1.25rem; margin: 0 0 3px 0;
+            font-weight: bold; flex-shrink: 0;
+        }
+
+        /* 일러스트 대신 색상과 텍스트로 대체 */
+        .illustration-box {
+            width: 100%; flex: 1 1 0; min-height: 0;
+            background-color: #f4f4f9;
+            border: 1px dashed #b0bec5; /* 연한 점선 테두리 */
+            position: relative; border-radius: 3px;
+            display: flex; align-items: center; justify-content: center;
+            color: #b0bec5; font-size: 1rem; font-weight: bold; letter-spacing: 2px;
+        }
+
+        .description {
+            font-size: 0.75rem; line-height: 1.3;
+            padding: 3px 0; word-break: keep-all; flex-shrink: 0;
+        }
+
+        .alignment-badge {
+            position: absolute; top: 4px; right: 4px;
+            padding: 2px 6px; border-radius: 4px;
+            font-size: 0.75rem; color: white;
+            font-weight: bold;
+        }
+        .alignment-badge.good    { background-color: #3498db; }
+        .alignment-badge.evil    { background-color: #e74c3c; }
+        .alignment-badge.neutral { background-color: #888; }
+
+        .resource-bar {
+            font-size: 1.1rem; display: flex;
+            justify-content: center; gap: 6px;
+            padding-bottom: 2px; flex-shrink: 0;
+        }
+
+        /* --- 뒷면 디자인 --- */
+        .card-back {
+            width: 100%; height: 100%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; font-weight: bold; color: white;
+            letter-spacing: 5px; text-indent: 5px;
+            transform: rotate(180deg); /* 접었을 때 똑바로 보이도록 */
+            border-radius: 2.8mm; /* 내부 라운드 처리 */
+            box-sizing: border-box;
+        }
+
+        /* 카드 타입별 뒷면 배경색 및 테두리 */
+        .bg-traveler { background-color: #2c3e50; border: 2mm solid #1a252f; } /* 나그네 (네이비) */
+        .bg-passerby { background-color: #5d4037; border: 2mm solid #3e2723; } /* 길손 (브라운) */
+        .bg-weather  { background-color: #455a64; border: 2mm solid #263238; } /* 날씨 (블루그레이) */
+
+    </style>
+</head>
+<body>
+<div id="pagesContainer"></div>
+<script>
+/* ── 전체 카드 데이터 (type 속성 포함) ── */
+const allCards = [
+    { type: "나그네", title: "보부상", content: "위험 길손(창귀·호랑이·산적) 없이 통과", alignment: "선", coin: 1, soul: 1 },
+    { type: "나그네", title: "보부상", content: "위험 길손(창귀·호랑이·산적) 없이 통과", alignment: "악", coin: 1, soul: 1 },
+    { type: "나그네", title: "보부상", content: "위험 길손(창귀·호랑이·산적) 없이 통과", alignment: "선", coin: 2, soul: 0 },
+    { type: "나그네", title: "보부상", content: "위험 길손(창귀·호랑이·산적) 없이 통과", alignment: "악", coin: 2, soul: 0 },
+    { type: "나그네", title: "보부상", content: "위험 길손(창귀·호랑이·산적) 없이 통과", alignment: "선", coin: 3, soul: 0 },
+    { type: "나그네", title: "보부상", content: "위험 길손(창귀·호랑이·산적) 없이 통과", alignment: "악", coin: 3, soul: 0 },
+    { type: "나그네", title: "도사", content: "창귀를 선택하면 퇴치 성공 / 호랑이·산적은 제압 불가", alignment: "선", coin: 3, soul: 1 },
+    { type: "나그네", title: "도사", content: "창귀를 선택하면 퇴치 성공 / 호랑이·산적은 제압 불가", alignment: "악", coin: 3, soul: 1 },
+    { type: "나그네", title: "착호갑사", content: "호랑이·산적을 선택하면 퇴치 성공 / 창귀는 제압 불가", alignment: "선", coin: 4, soul: 1 },
+    { type: "나그네", title: "착호갑사", content: "호랑이·산적을 선택하면 퇴치 성공 / 창귀는 제압 불가", alignment: "악", coin: 4, soul: 1 },
+    { type: "나그네", title: "창귀(나그네)", content: "등짐꾼·밀수꾼 선택 시 영혼 1개 탈취 / 동행 나그네가 도사가 아니라면 그 나그네 영혼도 1개 탈취 / 나머지에게 무력", alignment: "-", coin: 0, soul: 1 },
+
+    { type: "길손", title: "등짐꾼", content: "나그네가 보부상이라면, 나그네·등짐꾼 모두 🪙 +2. <br/>선택 안 됐을 때: 등짐꾼 🪙 +1" },
+    { type: "길손", title: "스님", content: "나그네 🧿 +1, 스님 🪙 +2 / 나그네가 창귀(나그네)라면 스님 🧿 +1 추가" },
+    { type: "길손", title: "밀수꾼", content: "나그네 🪙 +1, 밀수꾼 🪙 -1 <br/>선택 안 됐을 때: 밀수꾼 🪙 +3" },
+    { type: "길손", title: "산적떼", content: "나그네 🪙 -4, 산적떼 🪙 +4 (나그네 엽전 탈취 부족하면 가진 만큼 전부). <br/>선택 안 됐을 때: 산적떼 🪙 -1" },
+    { type: "길손", title: "산적들", content: "나그네 🪙 -2, 산적들 🪙 +2 (나그네 엽전 탈취 부족하면 가진 만큼 전부)." },
+    { type: "길손", title: "호랑이", content: "나그네 🧿 -1, 호랑이 🧿 +2 / 추가 창귀 카드 1장을 길손 덱에 추가" },
+    { type: "길손", title: "여우", content: "나그네(선): 여우 🧿 -1, 나그네 🧿 +1 / 나그네(악): 나그네 🧿 -2, 여우 🧿 +2 / 선택 안 됐을 때: 여우 🧿 +1" },
+    { type: "길손", title: "도깨비", content: "나그네(선): 나그네 🪙 +3, 도깨비 🧿 +1. / 나그네(악): 나그네 🧿 -1, 도깨비 🧿 +1." },
+    { type: "길손", title: "창귀", content: "나그네 🧿 -1. 창귀 🧿 +1, 추가 창귀 카드 1장을 길손 덱에 추가." },
+    { type: "길손", title: "창귀", content: "나그네 🧿 -1. 창귀 🧿 +1, 추가 창귀 카드 1장을 길손 덱에 추가." },
+    { type: "길손", title: "창귀", content: "나그네 🧿 -1. 창귀 🧿 +1, 추가 창귀 카드 1장을 길손 덱에 추가." },
+    { type: "길손", title: "창귀", content: "나그네 🧿 -1. 창귀 🧿 +1, 추가 창귀 카드 1장을 길손 덱에 추가." },
+
+    { type: "날씨", title: "☀️ 맑음", content: "길손 카드 모두 공개 후, 길손들이 섞어 나눠 갖는다." },
+    { type: "날씨", title: "☀️ 맑음", content: "길손 카드 2장 공개 후, 길손들이 섞어 나눠 갖는다." },
+    { type: "날씨", title: "🌫️ 안개", content: "길손 카드 1장 추가. <br/>나그네만 그 중 1장 확인 후, 길손들이 섞어 나눠 갖는다." },
+    { type: "날씨", title: "🌫️ 안개", content: "길손 카드 1장 추가. <br/>나그네는 길손마다 1번씩만 질문할 수 있고, 길손은 예/아니오로만 대답한다." },
+    { type: "날씨", title: "🌧️ 폭우", content: "카드 공개 없음. 길손은 말 금지. <br/>행동(몸짓)으로만 유혹." },
+    { type: "날씨", title: "🌧️ 폭우", content: "길손카드 1장 공개 후, 길손들이 섞어 나눠 갖는다. 길손은 말 금지. <br/>행동(몸짓)으로만 유혹." },
+    { type: "날씨", title: "🌑 어둠", content: "각 길손이 카드 2장 뽑아 1장 선택. <br/>길손은 한 단어로만 말할 수 있다." },
+    { type: "날씨", title: "🌑 어둠", content: "나그네 카드 3장 먼저 공개, 1장 비공개 선택. <br/>나그네는 말 금지, 길손만 말할 수 있다." }
+];
+
+const CARDS_PER_PAGE = 4; // 1페이지당 4쌍(8장)
+const pagesContainer = document.getElementById('pagesContainer');
+
+function createPageGrid() {
+    const page = document.createElement('div');
+    page.className = 'page';
+    
+    const grid = document.createElement('div');
+    grid.className = 'card-grid';
+    
+    page.appendChild(grid);
+    pagesContainer.appendChild(page);
+    return grid; 
+}
+
+function renderCard(data) {
+    const hasAlignment = data.alignment !== undefined;
+    const badgeClass = data.alignment === '선' ? 'good'
+                     : data.alignment === '악' ? 'evil' : 'neutral';
+    const badge = hasAlignment
+        ? `<span class="alignment-badge ${badgeClass}">${data.alignment}</span>` : '';
+
+    const coin = data.coin || 0;
+    const soul = data.soul || 0;
+    const resourceBar = (coin > 0 || soul > 0)
+        ? `<div class="resource-bar"><span>${'🪙'.repeat(coin)}</span><span>${'🧿'.repeat(soul)}</span></div>`
+        : '';
+
+    // 뒷면 색상 클래스 지정
+    let backColorClass = '';
+    if (data.type === '나그네') backColorClass = 'bg-traveler';
+    else if (data.type === '길손') backColorClass = 'bg-passerby';
+    else if (data.type === '날씨') backColorClass = 'bg-weather';
+
+    // 앞면 출력 후 뒷면 출력
+    return `
+        <div class="card">
+            <div class="card-front">
+                <h2 class="card-title">${data.title}</h2>
+                ${badge}
+                <br/>
+                <div class="description">${data.content}</div>
+                ${resourceBar}
+            </div>
+        </div>
+        <div class="card" style="padding: 0; border: none;">
+            <div class="card-back ${backColorClass}">
+                ${data.type}
+            </div>
+        </div>`;
+}
+
+let currentGrid = null;
+allCards.forEach((data, index) => {
+    if (index % CARDS_PER_PAGE === 0) {
+        currentGrid = createPageGrid();
+    }
+    currentGrid.innerHTML += renderCard(data);
+});
+</script>
+</body>
+</html>

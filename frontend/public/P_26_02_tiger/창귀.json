@@ -1,0 +1,65 @@
+{
+  "SaveName": "",
+  "GameMode": "",
+  "Date": "",
+  "Gravity": 0.5,
+  "PlayArea": 0.5,
+  "ObjectStates": [
+    {
+      "Name": "DeckCustom",
+      "Transform": { "posX": 0, "posY": 2, "posZ": 0, "rotX": 0, "rotY": 180, "rotZ": 180, "scaleX": 1, "scaleY": 1, "scaleZ": 1 },
+      "Nickname": "나그네 보드게임 덱",
+      "Description": "총 31장",
+      "DeckIDs": [
+        100, 101, 102, 103, 104, 105, 106, 107, 108, 109,
+        110, 111, 112, 113, 114, 115, 116, 117, 118, 119,
+        120, 121, 122, 123, 124, 125, 126, 127, 128, 129,
+        130
+      ],
+      "CustomDeck": {
+        "1": {
+          "FaceURL": "여기에_앞면_스프라이트시트_이미지주소_입력.png",
+          "BackURL": "여기에_뒷면_스프라이트시트_이미지주소_입력.png",
+          "NumWidth": 10,
+          "NumHeight": 4,
+          "BackIsHidden": true,
+          "UniqueBack": true,
+          "Type": 0
+        }
+      },
+      "ContainedObjects": [
+        { "Name": "Card", "Nickname": "보부상", "Description": "위험 길손(창귀·호랑이·산적) 없이 통과\n선 | 🪙 1 | 🧿 1", "CardID": 100, "CustomDeck": { "1": { "FaceURL": "URL", "BackURL": "URL", "NumWidth": 10, "NumHeight": 4, "BackIsHidden": true, "UniqueBack": true, "Type": 0 } } },
+        { "Name": "Card", "Nickname": "보부상", "Description": "위험 길손(창귀·호랑이·산적) 없이 통과\n악 | 🪙 1 | 🧿 1", "CardID": 101, "CustomDeck": { "1": { "FaceURL": "URL", "BackURL": "URL", "NumWidth": 10, "NumHeight": 4, "BackIsHidden": true, "UniqueBack": true, "Type": 0 } } },
+        { "Name": "Card", "Nickname": "보부상", "Description": "위험 길손(창귀·호랑이·산적) 없이 통과\n선 | 🪙 2 | 🧿 0", "CardID": 102, "CustomDeck": { "1": { "FaceURL": "URL", "BackURL": "URL", "NumWidth": 10, "NumHeight": 4, "BackIsHidden": true, "UniqueBack": true, "Type": 0 } } },
+        { "Name": "Card", "Nickname": "보부상", "Description": "위험 길손(창귀·호랑이·산적) 없이 통과\n악 | 🪙 2 | 🧿 0", "CardID": 103, "CustomDeck": { "1": { "FaceURL": "URL", "BackURL": "URL", "NumWidth": 10, "NumHeight": 4, "BackIsHidden": true, "UniqueBack": true, "Type": 0 } } },
+        { "Name": "Card", "Nickname": "보부상", "Description": "위험 길손(창귀·호랑이·산적) 없이 통과\n선 | 🪙 3 | 🧿 0", "CardID": 104, "CustomDeck": { "1": { "FaceURL": "URL", "BackURL": "URL", "NumWidth": 10, "NumHeight": 4, "BackIsHidden": true, "UniqueBack": true, "Type": 0 } } },
+        { "Name": "Card", "Nickname": "보부상", "Description": "위험 길손(창귀·호랑이·산적) 없이 통과\n악 | 🪙 3 | 🧿 0", "CardID": 105, "CustomDeck": { "1": { "FaceURL": "URL", "BackURL": "URL", "NumWidth": 10, "NumHeight": 4, "BackIsHidden": true, "UniqueBack": true, "Type": 0 } } },
+        { "Name": "Card", "Nickname": "도사", "Description": "창귀를 선택하면 퇴치 성공 / 호랑이·산적은 제압 불가\n선 | 🪙 3 | 🧿 1", "CardID": 106, "CustomDeck": { "1": { "FaceURL": "URL", "BackURL": "URL", "NumWidth": 10, "NumHeight": 4, "BackIsHidden": true, "UniqueBack": true, "Type": 0 } } },
+        { "Name": "Card", "Nickname": "도사", "Description": "창귀를 선택하면 퇴치 성공 / 호랑이·산적은 제압 불가\n악 | 🪙 3 | 🧿 1", "CardID": 107, "CustomDeck": { "1": { "FaceURL": "URL", "BackURL": "URL", "NumWidth": 10, "NumHeight": 4, "BackIsHidden": true, "UniqueBack": true, "Type": 0 } } },
+        { "Name": "Card", "Nickname": "착호갑사", "Description": "호랑이·산적을 선택하면 퇴치 성공 / 창귀는 제압 불가\n선 | 🪙 4 | 🧿 1", "CardID": 108, "CustomDeck": { "1": { "FaceURL": "URL", "BackURL": "URL", "NumWidth": 10, "NumHeight": 4, "BackIsHidden": true, "UniqueBack": true, "Type": 0 } } },
+        { "Name": "Card", "Nickname": "착호갑사", "Description": "호랑이·산적을 선택하면 퇴치 성공 / 창귀는 제압 불가\n악 | 🪙 4 | 🧿 1", "CardID": 109, "CustomDeck": { "1": { "FaceURL": "URL", "BackURL": "URL", "NumWidth": 10, "NumHeight": 4, "BackIsHidden": true, "UniqueBack": true, "Type": 0 } } },
+        { "Name": "Card", "Nickname": "창귀(나그네)", "Description": "등짐꾼·밀수꾼 선택 시 영혼 1개 탈취 / 동행 나그네가 도사가 아니라면 그 나그네 영혼도 1개 탈취 / 나머지에게 무력\n- | 🪙 0 | 🧿 1", "CardID": 110, "CustomDeck": { "1": { "FaceURL": "URL", "BackURL": "URL", "NumWidth": 10, "NumHeight": 4, "BackIsHidden": true, "UniqueBack": true, "Type": 0 } } },
+        { "Name": "Card", "Nickname": "등짐꾼", "Description": "나그네가 보부상이라면, 나그네·등짐꾼 모두 🪙 +2. 선택 안 됐을 때: 등짐꾼 🪙 +1", "CardID": 111, "CustomDeck": { "1": { "FaceURL": "URL", "BackURL": "URL", "NumWidth": 10, "NumHeight": 4, "BackIsHidden": true, "UniqueBack": true, "Type": 0 } } },
+        { "Name": "Card", "Nickname": "스님", "Description": "나그네 🧿 +1, 스님 🪙 +2 / 나그네가 창귀(나그네)라면 스님 🧿 +1 추가", "CardID": 112, "CustomDeck": { "1": { "FaceURL": "URL", "BackURL": "URL", "NumWidth": 10, "NumHeight": 4, "BackIsHidden": true, "UniqueBack": true, "Type": 0 } } },
+        { "Name": "Card", "Nickname": "밀수꾼", "Description": "나그네 🪙 +1, 밀수꾼 🪙 -1. 선택 안 됐을 때: 밀수꾼 🪙 +3", "CardID": 113, "CustomDeck": { "1": { "FaceURL": "URL", "BackURL": "URL", "NumWidth": 10, "NumHeight": 4, "BackIsHidden": true, "UniqueBack": true, "Type": 0 } } },
+        { "Name": "Card", "Nickname": "산적떼", "Description": "나그네 🪙 -4, 산적떼 🪙 +4 (탈취 부족하면 가진 만큼 전부). 선택 안 됐을 때: 산적떼 🪙 -1", "CardID": 114, "CustomDeck": { "1": { "FaceURL": "URL", "BackURL": "URL", "NumWidth": 10, "NumHeight": 4, "BackIsHidden": true, "UniqueBack": true, "Type": 0 } } },
+        { "Name": "Card", "Nickname": "산적들", "Description": "나그네 🪙 -2, 산적들 🪙 +2 (탈취 부족하면 가진 만큼 전부).", "CardID": 115, "CustomDeck": { "1": { "FaceURL": "URL", "BackURL": "URL", "NumWidth": 10, "NumHeight": 4, "BackIsHidden": true, "UniqueBack": true, "Type": 0 } } },
+        { "Name": "Card", "Nickname": "호랑이", "Description": "나그네 🧿 -1, 호랑이 🧿 +2 / 추가 창귀 카드 1장을 길손 덱에 추가", "CardID": 116, "CustomDeck": { "1": { "FaceURL": "URL", "BackURL": "URL", "NumWidth": 10, "NumHeight": 4, "BackIsHidden": true, "UniqueBack": true, "Type": 0 } } },
+        { "Name": "Card", "Nickname": "여우", "Description": "나그네(선): 여우 🧿 -1, 나그네 🧿 +1 / 나그네(악): 나그네 🧿 -2, 여우 🧿 +2 / 선택 안 됐을 때: 여우 🧿 +1", "CardID": 117, "CustomDeck": { "1": { "FaceURL": "URL", "BackURL": "URL", "NumWidth": 10, "NumHeight": 4, "BackIsHidden": true, "UniqueBack": true, "Type": 0 } } },
+        { "Name": "Card", "Nickname": "도깨비", "Description": "나그네(선): 나그네 🪙 +3, 도깨비 🧿 +1. / 나그네(악): 나그네 🧿 -1, 도깨비 🧿 +1.", "CardID": 118, "CustomDeck": { "1": { "FaceURL": "URL", "BackURL": "URL", "NumWidth": 10, "NumHeight": 4, "BackIsHidden": true, "UniqueBack": true, "Type": 0 } } },
+        { "Name": "Card", "Nickname": "창귀", "Description": "나그네 🧿 -1. 창귀 🧿 +1, 추가 창귀 카드 1장을 길손 덱에 추가.", "CardID": 119, "CustomDeck": { "1": { "FaceURL": "URL", "BackURL": "URL", "NumWidth": 10, "NumHeight": 4, "BackIsHidden": true, "UniqueBack": true, "Type": 0 } } },
+        { "Name": "Card", "Nickname": "창귀", "Description": "나그네 🧿 -1. 창귀 🧿 +1, 추가 창귀 카드 1장을 길손 덱에 추가.", "CardID": 120, "CustomDeck": { "1": { "FaceURL": "URL", "BackURL": "URL", "NumWidth": 10, "NumHeight": 4, "BackIsHidden": true, "UniqueBack": true, "Type": 0 } } },
+        { "Name": "Card", "Nickname": "창귀", "Description": "나그네 🧿 -1. 창귀 🧿 +1, 추가 창귀 카드 1장을 길손 덱에 추가.", "CardID": 121, "CustomDeck": { "1": { "FaceURL": "URL", "BackURL": "URL", "NumWidth": 10, "NumHeight": 4, "BackIsHidden": true, "UniqueBack": true, "Type": 0 } } },
+        { "Name": "Card", "Nickname": "창귀", "Description": "나그네 🧿 -1. 창귀 🧿 +1, 추가 창귀 카드 1장을 길손 덱에 추가.", "CardID": 122, "CustomDeck": { "1": { "FaceURL": "URL", "BackURL": "URL", "NumWidth": 10, "NumHeight": 4, "BackIsHidden": true, "UniqueBack": true, "Type": 0 } } },
+        { "Name": "Card", "Nickname": "☀️ 맑음", "Description": "길손 카드 모두 공개 후, 길손들이 섞어 나눠 갖는다.", "CardID": 123, "CustomDeck": { "1": { "FaceURL": "URL", "BackURL": "URL", "NumWidth": 10, "NumHeight": 4, "BackIsHidden": true, "UniqueBack": true, "Type": 0 } } },
+        { "Name": "Card", "Nickname": "☀️ 맑음", "Description": "길손 카드 2장 공개 후, 길손들이 섞어 나눠 갖는다.", "CardID": 124, "CustomDeck": { "1": { "FaceURL": "URL", "BackURL": "URL", "NumWidth": 10, "NumHeight": 4, "BackIsHidden": true, "UniqueBack": true, "Type": 0 } } },
+        { "Name": "Card", "Nickname": "🌫️ 안개", "Description": "길손 카드 1장 추가. 나그네만 그 중 1장 확인 후, 길손들이 섞어 나눠 갖는다.", "CardID": 125, "CustomDeck": { "1": { "FaceURL": "URL", "BackURL": "URL", "NumWidth": 10, "NumHeight": 4, "BackIsHidden": true, "UniqueBack": true, "Type": 0 } } },
+        { "Name": "Card", "Nickname": "🌫️ 안개", "Description": "길손 카드 1장 추가. 나그네는 길손마다 1번씩만 질문할 수 있고, 길손은 예/아니오로만 대답한다.", "CardID": 126, "CustomDeck": { "1": { "FaceURL": "URL", "BackURL": "URL", "NumWidth": 10, "NumHeight": 4, "BackIsHidden": true, "UniqueBack": true, "Type": 0 } } },
+        { "Name": "Card", "Nickname": "🌧️ 폭우", "Description": "카드 공개 없음. 길손은 말 금지. 행동(몸짓)으로만 유혹.", "CardID": 127, "CustomDeck": { "1": { "FaceURL": "URL", "BackURL": "URL", "NumWidth": 10, "NumHeight": 4, "BackIsHidden": true, "UniqueBack": true, "Type": 0 } } },
+        { "Name": "Card", "Nickname": "🌧️ 폭우", "Description": "길손카드 1장 공개 후, 길손들이 섞어 나눠 갖는다. 길손은 말 금지. 행동(몸짓)으로만 유혹.", "CardID": 128, "CustomDeck": { "1": { "FaceURL": "URL", "BackURL": "URL", "NumWidth": 10, "NumHeight": 4, "BackIsHidden": true, "UniqueBack": true, "Type": 0 } } },
+        { "Name": "Card", "Nickname": "🌑 어둠", "Description": "각 길손이 카드 2장 뽑아 1장 선택. 길손은 한 단어로만 말할 수 있다.", "CardID": 129, "CustomDeck": { "1": { "FaceURL": "URL", "BackURL": "URL", "NumWidth": 10, "NumHeight": 4, "BackIsHidden": true, "UniqueBack": true, "Type": 0 } } },
+        { "Name": "Card", "Nickname": "🌑 어둠", "Description": "나그네 카드 3장 먼저 공개, 1장 비공개 선택. 나그네는 말 금지, 길손만 말할 수 있다.", "CardID": 130, "CustomDeck": { "1": { "FaceURL": "URL", "BackURL": "URL", "NumWidth": 10, "NumHeight": 4, "BackIsHidden": true, "UniqueBack": true, "Type": 0 } } }
+      ]
+    }
+  ]
+}
