@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>패리 챔피언</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#07060f;
+    --ink:#e8f7ff;
+    --cyan:#22e7ff;
+    --magenta:#ff2e88;
+    --yellow:#ffd23f;
+    --green:#5cff7a;
+    --purple:#a06bff;
+    --red:#ff5a3c;
+  }
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  html,body{ height:100%; background:#000; overflow:hidden; }
+  body{
+    font-family:"Press Start 2P", monospace;
+    color:var(--ink);
+    -webkit-font-smoothing:none;
+    display:flex; align-items:center; justify-content:center;
+    touch-action:none;
+    user-select:none;
+  }
+  #wrap{ position:fixed; inset:0; background:#000; }
+  canvas#game{
+    position:absolute; inset:0; width:100%; height:100%;
+    image-rendering:pixelated;
+    display:block;
+  }
+
+  /* CRT scanlines + vignette overlay */
+  #crt{
+    position:absolute; inset:0; pointer-events:none; z-index:30;
+    mix-blend-mode:overlay; opacity:.5;
+    background:repeating-linear-gradient(
+      to bottom,
+      rgba(255,255,255,.06) 0px,
+      rgba(255,255,255,.06) 1px,
+      rgba(0,0,0,.18) 2px,
+      rgba(0,0,0,.18) 3px
+    );
+  }
+  #vignette{
+    position:absolute; inset:0; pointer-events:none; z-index:31;
+    background:radial-gradient(120% 120% at 50% 50%, transparent 55%, rgba(0,0,0,.55) 100%);
+  }
+  @keyframes flicker{ 0%,100%{opacity:.5} 50%{opacity:.42} 73%{opacity:.55} }
+  #crt{ animation:flicker 4s infinite steps(3); }
+
+  /* Overlays */
+  .overlay{
+    position:absolute; inset:0; z-index:40;
+    display:flex; align-items:center; justify-content:center;
+    flex-direction:column; text-align:center;
+    background:rgba(4,3,12,.82);
+    backdrop-filter:blur(2px);
+    padding:24px;
+  }
+  .overlay.hidden{ display:none; }
+  .panel{ max-width:760px; width:100%; }
+
+  .title{
+    font-size:clamp(28px,6vw,58px);
+    line-height:1.25;
+    color:var(--cyan);
+    text-shadow:0 0 8px rgba(34,231,255,.6), 4px 4px 0 var(--magenta);
+    letter-spacing:1px;
+  }
+  .title .sub{
+    display:block; margin-top:14px; font-size:clamp(11px,1.8vw,16px); color:var(--magenta);
+    text-shadow:0 0 6px rgba(255,46,136,.5);
+  }
+  .lead{ font-size:clamp(9px,1.4vw,12px); line-height:2.1; color:var(--ink); opacity:.85; margin-top:30px; }
+  .lead b{ color:var(--yellow); }
+  .blink{ margin-top:34px; font-size:clamp(11px,1.8vw,16px); color:var(--green); animation:bl 1s steps(2) infinite; }
+  @keyframes bl{ 50%{opacity:.15} }
+
+  .keycap{
+    display:inline-block; border:2px solid var(--ink); border-bottom-width:4px;
+    border-radius:4px; padding:4px 7px; margin:0 2px; color:var(--ink);
+    font-size:.85em; background:rgba(255,255,255,.05);
+  }
+
+  /* Level up cards */
+  .lvtitle{ font-size:clamp(20px,4vw,40px); color:var(--green); text-shadow:0 0 10px rgba(92,255,122,.6), 3px 3px 0 #0a3; }
+  .lvsub{ margin-top:14px; font-size:clamp(9px,1.5vw,12px); color:var(--ink); opacity:.8; }
+  .cards{ display:flex; gap:18px; margin-top:34px; flex-wrap:wrap; justify-content:center; }
+  .card{
+    width:200px; min-height:210px; background:#0e0c1c;
+    border:3px solid var(--purple); border-radius:6px;
+    box-shadow:0 0 0 2px #000, 6px 6px 0 rgba(160,107,255,.28);
+    padding:20px 16px; cursor:pointer; position:relative;
+    display:flex; flex-direction:column; align-items:center; gap:14px;
+    transition:transform .08s ease, border-color .08s ease, box-shadow .08s ease;
+  }
+  .card:hover, .card.sel{
+    transform:translate(-2px,-2px);
+    border-color:var(--cyan);
+    box-shadow:0 0 0 2px #000, 8px 8px 0 rgba(34,231,255,.4);
+  }
+  .card .num{
+    position:absolute; top:-14px; left:-12px; width:28px; height:28px; line-height:28px;
+    background:var(--cyan); color:#04121a; border-radius:4px; font-size:13px;
+    box-shadow:2px 2px 0 #000;
+  }
+  .card .ic{ font-size:34px; line-height:1; filter:drop-shadow(2px 2px 0 #000); }
+  .card .nm{ font-size:11px; color:var(--cyan); line-height:1.5; }
+  .card .ds{ font-size:8.5px; color:var(--ink); opacity:.78; line-height:1.8; }
+
+  /* Game over */
+  .gotitle{ font-size:clamp(26px,5vw,52px); color:var(--magenta); text-shadow:0 0 10px rgba(255,46,136,.6), 4px 4px 0 #600; }
+  .stats{ margin-top:30px; font-size:clamp(10px,1.6vw,14px); line-height:2.4; }
+  .stats .v{ color:var(--yellow); }
+  .stats .hi{ color:var(--green); }
+
+  .hint{ position:absolute; left:0; right:0; bottom:10px; text-align:center; font-size:9px; color:var(--ink); opacity:.4; z-index:35; }
+</style>
+</head>
+<body>
+  <div id="wrap" data-screen-label="Game">
+    <canvas id="game"></canvas>
+    <div id="crt"></div>
+    <div id="vignette"></div>
+
+    <!-- START -->
+    <div class="overlay" id="ov-start" data-screen-label="Start">
+      <div class="panel">
+        <div class="title">패리 챔피언<span class="sub">P A R R Y &nbsp; C H A M P I O N</span></div>
+        <div class="lead">
+          사방에서 적이 몰려와 <b>탄막</b>을 쏜다.<br/>
+          타이밍에 맞춰 <b>패리</b>하면 탄막이 튕겨나가<br/>
+          적을 꿰뚫는다. 끝까지 살아남아라.<br/><br/>
+          <span class="keycap">↑</span><span class="keycap">↓</span><span class="keycap">←</span><span class="keycap">→</span> / <span class="keycap">WASD</span> &nbsp; 이동<br/>
+          <span class="keycap">SPACE</span> 패리 &nbsp;·&nbsp; 안 누르면 <b>3초마다 자동 패리</b><br/>
+          <span class="keycap">M</span> 음소거 &nbsp;·&nbsp; <span class="keycap">P</span> 일시정지
+        </div>
+        <div class="blink">▶ ENTER 또는 클릭으로 시작</div>
+      </div>
+    </div>
+
+    <!-- LEVEL UP -->
+    <div class="overlay hidden" id="ov-level" data-screen-label="LevelUp">
+      <div class="panel">
+        <div class="lvtitle">LEVEL UP!</div>
+        <div class="lvsub">강화를 하나 선택하라 — 숫자키 1·2·3</div>
+        <div class="cards" id="cards"></div>
+      </div>
+    </div>
+
+    <!-- GAME OVER -->
+    <div class="overlay hidden" id="ov-over" data-screen-label="GameOver">
+      <div class="panel">
+        <div class="gotitle">GAME OVER</div>
+        <div class="stats">
+          SCORE <span class="v" id="go-score">0</span><br/>
+          WAVE <span class="v" id="go-wave">1</span> &nbsp;·&nbsp; LV <span class="v" id="go-level">1</span><br/>
+          MAX COMBO <span class="v" id="go-combo">0</span><br/>
+          HI-SCORE <span class="hi" id="go-hi">0</span>
+        </div>
+        <div class="blink">▶ ENTER로 다시 도전</div>
+      </div>
+    </div>
+
+    <div class="hint">데스크톱 키보드 전용 · 화면을 클릭해 포커스하세요</div>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>
